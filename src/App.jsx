@@ -89,7 +89,7 @@ const App = () => {
   const [selectedSector, setSelectedSector] = useState('All');
   const [riskFilter, setRiskFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Advanced State Variables
@@ -151,6 +151,45 @@ const App = () => {
       return () => clearInterval(interval);
     }
   }, [quantumMode]);
+
+// Is code ko existing useEffect ke baad add karein:
+
+// App open hote hi full screen mein jane ke liye
+useEffect(() => {
+  const enterFullscreenOnStart = () => {
+    try {
+      // Check if not already in full screen
+      if (!document.fullscreenElement && 
+          !document.webkitFullscreenElement && 
+          !document.mozFullScreenElement && 
+          !document.msFullscreenElement) {
+        
+        const elem = document.documentElement;
+        
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (elem.mozRequestFullScreen) {
+          elem.mozRequestFullScreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        }
+        
+        setIsFullscreen(true);
+        console.log('Auto full screen activated');
+      }
+    } catch (error) {
+      console.warn('Auto full screen failed:', error);
+      setIsFullscreen(false);
+    }
+  };
+
+  // Short delay se try karein
+  const timer = setTimeout(enterFullscreenOnStart, 1000);
+  
+  return () => clearTimeout(timer);
+}, []);
 
   // Generate Neural Activity
   useEffect(() => {
