@@ -89,7 +89,7 @@ const App = () => {
   const [selectedSector, setSelectedSector] = useState('All');
   const [riskFilter, setRiskFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isFullscreen, setIsFullscreen] = useState(true);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Advanced State Variables
@@ -151,45 +151,6 @@ const App = () => {
       return () => clearInterval(interval);
     }
   }, [quantumMode]);
-
-// Is code ko existing useEffect ke baad add karein:
-
-// App open hote hi full screen mein jane ke liye
-useEffect(() => {
-  const enterFullscreenOnStart = () => {
-    try {
-      // Check if not already in full screen
-      if (!document.fullscreenElement && 
-          !document.webkitFullscreenElement && 
-          !document.mozFullScreenElement && 
-          !document.msFullscreenElement) {
-        
-        const elem = document.documentElement;
-        
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen();
-        } else if (elem.mozRequestFullScreen) {
-          elem.mozRequestFullScreen();
-        } else if (elem.msRequestFullscreen) {
-          elem.msRequestFullscreen();
-        }
-        
-        setIsFullscreen(true);
-        console.log('Auto full screen activated');
-      }
-    } catch (error) {
-      console.warn('Auto full screen failed:', error);
-      setIsFullscreen(false);
-    }
-  };
-
-  // Short delay se try karein
-  const timer = setTimeout(enterFullscreenOnStart, 1000);
-  
-  return () => clearTimeout(timer);
-}, []);
 
   // Generate Neural Activity
   useEffect(() => {
@@ -1411,36 +1372,6 @@ useEffect(() => {
     ))}
   </div>
 </div>
-
-      {/* Enhanced Controls with Quantum Features */}
-      <div className="mb-6 flex flex-wrap gap-3 items-center relative z-10">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            ref={searchInputRef}
-            type="text"
-            placeholder={quantumMode ? "Quantum search symbols..." : "Search symbols or companies..."}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={`w-full pl-10 pr-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
-            onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                    }
-                    if (e.key === 'Escape') {
-                      setSearchQuery('');
-                    }
-                  }}
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
 
         <select 
           value={selectedMarket}
