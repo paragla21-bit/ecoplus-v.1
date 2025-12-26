@@ -628,8 +628,8 @@ const App = () => {
   }, [assets, selectedSector, riskFilter, searchQuery, sortBy]);
 
   useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
+  const timer = setInterval(() => setCurrentTime(new Date()), 300000); // 5 minutes = 300,000ms
+  return () => clearInterval(timer);
   }, []);
 
   // Simulate system metrics
