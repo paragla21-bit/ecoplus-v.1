@@ -147,7 +147,7 @@ const App = () => {
           }));
           return newBits.slice(0, 20);
         });
-      }, 11000);
+      }, 300000);
       return () => clearInterval(interval);
     }
   }, [quantumMode]);
@@ -165,7 +165,7 @@ const App = () => {
           }));
           return [...newActivity, ...prev].slice(0, 50);
         });
-      }, 11000);
+      }, 300000);
       return () => clearInterval(interval);
     }
   }, [neuralNetworkMode]);
@@ -175,7 +175,7 @@ const App = () => {
     if (quantumMode) {
       const interval = setInterval(() => {
         setQuantumEntanglement(prev => (prev + 1) % 100);
-      }, 5000);
+      }, 300000);
       return () => clearInterval(interval);
     }
   }, [quantumMode]);
@@ -187,7 +187,7 @@ const App = () => {
         const change = (Math.random() - 0.5) * 2;
         return Math.min(100, Math.max(0, prev + change));
       });
-    }, 11000);
+    }, 300000);
     return () => clearInterval(interval);
   }, []);
 
@@ -214,7 +214,7 @@ const App = () => {
         }
         return prev;
       });
-    }, 10000);
+    }, 300000);
     
     return () => clearInterval(interval);
   }, []);
