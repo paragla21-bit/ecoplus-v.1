@@ -1982,7 +1982,7 @@ useEffect(() => {
                 {quantumMode ? '⚛️ Quantum Analyzer v.2.0' : 'Ecoplus Analyzer v.1169'}
               </h1>
               <p className="text-sm text-gray-400 mt-1">
-                {quantumMode ? 'Quantum-Powered Trading Intelligence' : 'AI-Powered Trading Intelligence' : 'Design by ParagArtbook'} | Made in India 🇮🇳
+                {quantumMode ? 'Quantum-Powered Trading Intelligence' : 'AI-Powered Trading Intelligence'} | Design by ParagArtbook
               </p>
             </div>
           </div>
