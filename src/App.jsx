@@ -1262,35 +1262,24 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* Enhanced Controls with Quantum Features */}
-      <div className="mb-6 flex flex-wrap gap-3 items-center relative z-10">
+      <div className="mb-6 flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
-            ref={searchInputRef}
             type="text"
-            placeholder={quantumMode ? "Quantum search symbols..." : "Search symbols or companies..."}
+            placeholder="Search symbols or companies..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className={`w-full pl-10 pr-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
-            onKeyDown={(e) => e.key === 'Enter' ? e.preventDefault() : e.key === 'Escape' && setSearchQuery('')}
+            className={`w-full pl-10 pr-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? 'border-emerald-500' : 'border-emerald-200'} focus:outline-none focus:ring-2 focus:ring-emerald-500`}
           />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
         </div>
 
         <select 
           value={selectedMarket}
           onChange={(e) => setSelectedMarket(e.target.value)}
-          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
+          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? 'border-emerald-500' : 'border-emerald-200'} focus:outline-none focus:ring-2 focus:ring-emerald-500`}
         >
-          {['Stocks', 'Crypto', 'Forex', 'Futures', 'Options', 'Quantum Assets'].map(market => (
+          {['Stocks', 'Crypto', 'Forex', 'Futures', 'Options'].map(market => (
             <option key={market} value={market}>{market}</option>
           ))}
         </select>
@@ -1298,9 +1287,9 @@ useEffect(() => {
         <select 
           value={selectedSector}
           onChange={(e) => setSelectedSector(e.target.value)}
-          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
+          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? 'border-emerald-500' : 'border-emerald-200'} focus:outline-none focus:ring-2 focus:ring-emerald-500`}
         >
-          {sectors.map(sector => (
+          {sectors.slice(0, 10).map(sector => (
             <option key={sector} value={sector}>{sector}</option>
           ))}
         </select>
@@ -1308,39 +1297,22 @@ useEffect(() => {
         <select 
           value={riskFilter}
           onChange={(e) => setRiskFilter(e.target.value)}
-          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
+          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? 'border-emerald-500' : 'border-emerald-200'} focus:outline-none focus:ring-2 focus:ring-emerald-500`}
         >
-          {['All', 'Low', 'Medium', 'High', 'Quantum'].map(risk => (
-            <option key={risk} value={risk}>
-              {risk === 'Quantum' ? '⚛️ Quantum Risk' : risk === 'All' ? 'All Risk' : risk === 'Low' ? 'Low Risk (≤4)' : risk === 'Medium' ? 'Medium Risk (4-6)' : 'High Risk (>6)'}
-            </option>
+          {['All Risk', 'Low Risk (≤4)', 'Medium Risk (4-6)', 'High Risk (>6)'].map(risk => (
+            <option key={risk} value={risk}>{risk}</option>
           ))}
         </select>
 
         <select 
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
+          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? 'border-emerald-500' : 'border-emerald-200'} focus:outline-none focus:ring-2 focus:ring-emerald-500`}
         >
-          {['Total Score', 'AI Score', 'Risk Score', 'Volume Profile', 'Price Change', 'Market Cap', 'Quantum Probability', 'Neural Strength'].map(sort => (
+          {['Total Score', 'AI Score', 'Risk Score', 'Volume Profile', 'Price Change'].map(sort => (
             <option key={sort} value={sort}>{sort}</option>
           ))}
         </select>
-
-        <button
-          onClick={clearFilters}
-          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} border ${darkMode ? 'border-gray-600' : 'border-gray-300'} flex items-center`}
-        >
-          <X className="w-4 h-4 mr-2" />
-          Clear Filters
-        </button>
-
-        <button
-          onClick={() => setGridView(!gridView)}
-          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-100'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} flex items-center`}
-        >
-          {gridView ? 'List View' : 'Grid View'}
-        </button>
       </div>
 
       {/* Enhanced Assets Table with Quantum Effects */}
