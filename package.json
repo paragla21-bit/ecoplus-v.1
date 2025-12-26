@@ -1,0 +1,52 @@
+{
+  "name": "quantum-trading-dashboard",
+  "private": true,
+  "version": "2.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && gh-pages -d dist"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.344.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.15.4",
+    "tailwind-merge": "^2.6.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "autoprefixer": "^10.4.23",
+    "gh-pages": "^6.3.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19",
+    "vite": "^4.5.14"
+  },
+  "homepage": "https://yourusername.github.io/quantum-trading-dashboard",
+  "keywords": [
+    "trading",
+    "dashboard",
+    "quantum",
+    "ai",
+    "react",
+    "fintech",
+    "stock-market",
+    "crypto"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "description": "Quantum Trading Dashboard - AI-powered trading intelligence platform with quantum computing features",
+  "main": "postcss.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paragla21-bit/ecoplus-v.1.git"
+  },
+  "bugs": {
+    "url": "https://github.com/paragla21-bit/ecoplus-v.1/issues"
+  }
+}
