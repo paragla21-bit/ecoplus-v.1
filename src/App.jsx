@@ -1301,7 +1301,77 @@ useEffect(() => {
         </div>
       </div>
 
-     
+     {/* Trading Sessions with Quantum Effects */}
+<div className={`mb-6 ${darkMode ? 'bg-gray-800 bg-opacity-90' : 'bg-white'} backdrop-blur-sm rounded-lg p-4 border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} relative z-10`}>
+  <div className="flex items-center justify-between mb-4">
+    <h2 className="text-lg font-bold flex items-center">
+      <Clock className="mr-2 text-emerald-400" /> {quantumMode ? 'Quantum Trading Sessions' : 'Trading Sessions'}
+    </h2>
+    <div className="flex items-center space-x-2">
+      <button 
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          refreshData();
+        }}
+        className={`p-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} text-emerald-400 hover:text-emerald-300`}
+        title="Refresh Data"
+        type="button"
+      >
+        <RefreshCw className="w-4 h-4" />
+      </button>
+      <span className="text-xs text-gray-400">Live Quantum Feed</span>
+    </div>
+  </div>
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+    {sessions.map((session, idx) => (
+      <div 
+        key={idx} 
+        className={`p-3 rounded-lg border-2 transition-all duration-300 ${
+          session.active 
+            ? quantumMode 
+              ? 'border-cyan-500 bg-cyan-900 bg-opacity-30 animate-pulse' 
+              : 'border-emerald-500 bg-emerald-900 bg-opacity-30'
+            : 'border-gray-600 bg-gray-700 bg-opacity-30'
+        } hover:scale-[1.02] cursor-pointer relative overflow-hidden`}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          alert(`Session Details: ${session.name}\nTime: ${session.time}\nPriority: ${session.priority}/5`);
+        }}
+      >
+        {session.name === 'Quantum Session' && quantumMode && (
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-20 animate-pulse"></div>
+        )}
+        <div className="flex items-center justify-between mb-2 relative z-10">
+          <div>
+            <span className="font-bold">{session.name}</span>
+            <div className="flex items-center mt-1">
+              <span className={`text-xs px-2 py-0.5 rounded mr-2 ${
+                session.active 
+                  ? quantumMode 
+                    ? 'bg-cyan-500 animate-pulse' 
+                    : 'bg-emerald-500'
+                  : 'bg-gray-600'
+              }`}>
+                {session.active ? 'ACTIVE' : 'CLOSED'}
+              </span>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm font-semibold">{session.priority}/5</div>
+            <div className="text-xs text-gray-400">Priority</div>
+          </div>
+        </div>
+        <div className="text-sm text-gray-300 relative z-10">{session.time}</div>
+        <div className="flex justify-between text-xs text-gray-400 mt-2 relative z-10">
+          <span>📊 {session.volume}</span>
+          <span>⚡ {session.volatility}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
 
       {/* Enhanced Controls with Quantum Features */}
       <div className="mb-6 flex flex-wrap gap-3 items-center relative z-10">
@@ -1314,14 +1384,7 @@ useEffect(() => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className={`w-full pl-10 pr-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
-            onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                    }
-                    if (e.key === 'Escape') {
-                      setSearchQuery('');
-                    }
-                  }}
+            
           />
           {searchQuery && (
             <button
