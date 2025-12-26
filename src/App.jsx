@@ -365,10 +365,10 @@ const App = () => {
       });
   }, [assets, selectedSector, riskFilter, searchQuery, sortBy]);
 
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 300000); // 5 minutes = 300,000ms
-    return () => clearInterval(timer);
-  }, []);
+useEffect(() => {
+  const timer = setInterval(() => setCurrentTime(new Date()), 300000); // 5 minutes = 300,000ms
+  return () => clearInterval(timer);
+}, []);
 
   // Simulate system metrics
   useEffect(() => {
@@ -1005,13 +1005,13 @@ const App = () => {
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
           <input
-          ref={searchInputRef}
-          type="text"
-          placeholder={quantumMode ? "Quantum search symbols..." : "Search symbols or companies..."}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' ? e.preventDefault() : e.key === 'Escape' && setSearchQuery('')}
-          className={`w-full pl-10 pr-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
+            ref={searchInputRef}
+            type="text"
+            placeholder={quantumMode ? "Quantum search symbols..." : "Search symbols or companies..."}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={`w-full pl-10 pr-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
+            onKeyDown={(e) => e.key === 'Enter' ? e.preventDefault() : e.key === 'Escape' && setSearchQuery('')}
           />
           {searchQuery && (
             <button
