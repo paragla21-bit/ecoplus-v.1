@@ -125,7 +125,7 @@ const App = () => {
   const [wormholeOpen, setWormholeOpen] = useState(false);
   
   // Settings state
-  const [refreshInterval, setRefreshInterval] = useState('Manual');
+  //const [refreshInterval, setRefreshInterval] = useState('Manual');
   const [defaultCurrency, setDefaultCurrency] = useState('Indian Rupees (₹)');
   const [priceAlerts, setPriceAlerts] = useState(true);
   const [signalAlerts, setSignalAlerts] = useState(true);
