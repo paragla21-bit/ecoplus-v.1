@@ -1384,7 +1384,14 @@ useEffect(() => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className={`w-full pl-10 pr-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
-            
+            onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                    }
+                    if (e.key === 'Escape') {
+                      setSearchQuery('');
+                    }
+                  }}
           />
           {searchQuery && (
             <button
