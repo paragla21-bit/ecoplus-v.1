@@ -221,7 +221,6 @@ const App = () => {
 
   // Performance optimization - useMemo for expensive calculations
   const generateAdvancedData = useCallback(() => {
-    const stocks = [
       const allTradingAssets = [
           // === TOP 75 LARGE CAP INDIAN STOCKS ===
           { symbol: 'RELIANCE', name: 'Reliance Industries', sector: 'Energy/Retail', basePrice: 1560.60, baseChange: 0.15, marketCap: '21,09,105', weekHigh: 1581.30 },
