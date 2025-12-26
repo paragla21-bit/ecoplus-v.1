@@ -147,7 +147,7 @@ const App = () => {
           }));
           return newBits.slice(0, 20);
         });
-      }, 300000);
+      }, 11000);
       return () => clearInterval(interval);
     }
   }, [quantumMode]);
@@ -165,7 +165,7 @@ const App = () => {
           }));
           return [...newActivity, ...prev].slice(0, 50);
         });
-      }, 300000);
+      }, 11000);
       return () => clearInterval(interval);
     }
   }, [neuralNetworkMode]);
@@ -175,7 +175,7 @@ const App = () => {
     if (quantumMode) {
       const interval = setInterval(() => {
         setQuantumEntanglement(prev => (prev + 1) % 100);
-      }, 300000);
+      }, 5000);
       return () => clearInterval(interval);
     }
   }, [quantumMode]);
@@ -187,7 +187,7 @@ const App = () => {
         const change = (Math.random() - 0.5) * 2;
         return Math.min(100, Math.max(0, prev + change));
       });
-    }, 300000);
+    }, 11000);
     return () => clearInterval(interval);
   }, []);
 
@@ -214,7 +214,7 @@ const App = () => {
         }
         return prev;
       });
-    }, 300000);
+    }, 10000);
     
     return () => clearInterval(interval);
   }, []);
@@ -1128,126 +1128,24 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* Enhanced Radar Chart for Analysis */}
-<div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-5 border ${darkMode ? 'border-purple-500/50' : 'border-purple-200'} shadow-sm hover:shadow-md transition-shadow duration-300`}>
-  <div className="flex items-center justify-between mb-4">
-    <h3 className="font-bold text-lg flex items-center">
-      <Radar className="mr-2 text-purple-400" size={20} /> 
-      <span className={darkMode ? 'text-gray-100' : 'text-gray-800'}>Skill Analysis Radar</span>
-    </h3>
-    <div className="text-xs text-gray-500 flex items-center">
-      <div className="flex items-center mr-3">
-        <div className="w-3 h-3 rounded-full bg-purple-500 mr-1"></div>
-        <span>Current</span>
-      </div>
-      <div className="flex items-center">
-        <div className="w-3 h-3 rounded-full bg-emerald-500 mr-1"></div>
-        <span>Average</span>
-      </div>
-    </div>
-  </div>
-  
-  <div className="h-52 relative">
-    <ResponsiveContainer width="100%" height="100%">
-      <RadarChart 
-        data={radarData}
-        margin={{ top: 10, right: 30, bottom: 10, left: 30 }}
-      >
-        <PolarGrid 
-          stroke={darkMode ? "#4b5563" : "#e5e7eb"} 
-          strokeWidth={0.5}
-          radialLines={false}
-        />
-        <PolarAngleAxis 
-          dataKey="subject" 
-          tick={{ 
-            fill: darkMode ? "#d1d5db" : "#4b5563", 
-            fontSize: 12,
-            fontWeight: 500 
-          }}
-          tickLine={false}
-        />
-        <PolarRadiusAxis 
-          angle={30} 
-          domain={[0, 100]}
-          tick={{ 
-            fill: darkMode ? "#9ca3af" : "#6b7280", 
-            fontSize: 10 
-          }}
-          stroke={darkMode ? "#4b5563" : "#e5e7eb"}
-          tickCount={5}
-        />
-        <RechartsRadar 
-          name="Current" 
-          dataKey="A" 
-          stroke="#8b5cf6" 
-          strokeWidth={2}
-          fill="url(#currentGradient)" 
-          fillOpacity={0.4}
-        />
-        <RechartsRadar 
-          name="Average" 
-          dataKey="B" 
-          stroke="#10b981" 
-          strokeWidth={1.5}
-          strokeDasharray="3 3"
-          fill="url(#averageGradient)" 
-          fillOpacity={0.2}
-        />
-        
-        {/* Gradient Definitions */}
-        <defs>
-          <linearGradient id="currentGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.6}/>
-            <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.1}/>
-          </linearGradient>
-          <linearGradient id="averageGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#10b981" stopOpacity={0.4}/>
-            <stop offset="100%" stopColor="#10b981" stopOpacity={0.05}/>
-          </linearGradient>
-        </defs>
-        
-        <Tooltip
-          contentStyle={{
-            backgroundColor: darkMode ? '#374151' : '#ffffff',
-            border: darkMode ? '1px solid #4b5563' : '1px solid #e5e7eb',
-            borderRadius: '8px',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-          }}
-          labelStyle={{ 
-            color: darkMode ? '#f3f4f6' : '#111827',
-            fontWeight: 600,
-            marginBottom: '4px'
-          }}
-          formatter={(value) => [`${value}%`, 'Score']}
-        />
-      </RadarChart>
-    </ResponsiveContainer>
-    
-    {/* Center label */}
-    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
-      <div className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-        Skill Score
-      </div>
-    </div>
-  </div>
-  
-  {/* Stats summary */}
-  <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 grid grid-cols-2 gap-3 text-sm">
-    <div className="text-center">
-      <div className="font-semibold text-gray-700 dark:text-gray-300">Current Avg</div>
-      <div className="text-lg font-bold text-purple-600 dark:text-purple-400">
-        {Math.round(radarData.reduce((acc, item) => acc + item.A, 0) / radarData.length)}%
-      </div>
-    </div>
-    <div className="text-center">
-      <div className="font-semibold text-gray-700 dark:text-gray-300">Benchmark Avg</div>
-      <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-        {Math.round(radarData.reduce((acc, item) => acc + item.B, 0) / radarData.length)}%
-      </div>
-    </div>
-  </div>
-</div>
+        {/* Radar Chart for Analysis */}
+        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-4 border ${darkMode ? 'border-purple-500' : 'border-purple-200'}`}>
+          <h3 className="font-bold mb-3 flex items-center">
+            <Radar className="mr-2 text-purple-400" /> Analysis Radar
+          </h3>
+          <div className="h-40">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart data={radarData}>
+                <PolarGrid />
+                <PolarAngleAxis dataKey="subject" stroke={darkMode ? "#9ca3af" : "#6b7280"} />
+                <PolarRadiusAxis stroke={darkMode ? "#9ca3af" : "#6b7280"} />
+                <RechartsRadar name="Current" dataKey="A" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.3} />
+                <RechartsRadar name="Average" dataKey="B" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
+                <Legend />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
         {/* Portfolio Distribution */}
         <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-4 border ${darkMode ? 'border-blue-500' : 'border-blue-200'}`}>
@@ -1375,14 +1273,7 @@ useEffect(() => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className={`w-full pl-10 pr-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
-            onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                    }
-                    if (e.key === 'Escape') {
-                      setSearchQuery('');
-                    }
-                  }}
+            onKeyDown={(e) => e.key === 'Enter' ? e.preventDefault() : e.key === 'Escape' && setSearchQuery('')}
           />
           {searchQuery && (
             <button
