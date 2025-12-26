@@ -1249,7 +1249,7 @@ useEffect(() => {
   </div>
 </div>
 
-        {/* Portfolio Distribution */}
+{/* Portfolio Distribution */}
         <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-4 border ${darkMode ? 'border-blue-500' : 'border-blue-200'}`}>
           <h3 className="font-bold mb-3 flex items-center">
             <PieChart className="mr-2 text-blue-400" /> Portfolio Distribution
@@ -1300,7 +1300,6 @@ useEffect(() => {
           </div>
         </div>
       </div>
-
 
       {/* Trading Sessions with Quantum Effects */}
       <div className={`mb-6 ${darkMode ? 'bg-gray-800 bg-opacity-90' : 'bg-white'} backdrop-blur-sm rounded-lg p-4 border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} relative z-10`}>
@@ -2526,4 +2525,3 @@ useEffect(() => {
 };
 
 export default App;
-
