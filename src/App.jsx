@@ -1,121 +1,100 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  TrendingUp, TrendingDown, AlertTriangle, Clock, Target, Zap, 
-  Brain, ChevronDown, ChevronUp, BarChart3, Activity, 
-  Shield, DollarSign, Percent, MessageSquare, Send, 
-  Smartphone, Volume2, TrendingUp as Profit, TrendingDown as Loss,
-  Filter, Settings, Bell, ExternalLink
-} from 'lucide-react';
+import { TrendingUp, TrendingDown, AlertTriangle, Clock, Target, Zap, Brain, ChevronDown, ChevronUp, BarChart3, Activity, Bell, Settings } from 'lucide-react';
 
 const ICTAdvancedAnalyzer = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedMarket, setSelectedMarket] = useState('Stocks');
   const [sortBy, setSortBy] = useState('Total Score');
   const [expandedAsset, setExpandedAsset] = useState(null);
-  const [telegramConfig, setTelegramConfig] = useState({
-    token: '',
-    chatId: '',
-    enabled: false
-  });
-  const [alertsSent, setAlertsSent] = useState([]);
-  const [showTelegramModal, setShowTelegramModal] = useState(false);
+  const [telegramBotToken, setTelegramBotToken] = useState('');
+  const [telegramChatId, setTelegramChatId] = useState('');
+  const [showSettings, setShowSettings] = useState(false);
+  const [alertSent, setAlertSent] = useState({});
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // Generate realistic trade parameters
-  const generateTradeParameters = (basePrice) => {
-    const volatility = 0.02 + Math.random() * 0.05;
-    const riskMultiplier = 1.5 + Math.random() * 2;
-    const stopLossPercent = (volatility * riskMultiplier * 100).toFixed(1);
-    const targetPercent = (volatility * riskMultiplier * 2.5 * 100).toFixed(1);
+  // Calculate price levels based on ICT methodology
+  const calculateTradeLevels = (basePrice) => {
+    const currentPrice = basePrice;
+    const atr = basePrice * 0.02; // 2% ATR approximation
     
-    const currentPrice = (basePrice * (0.95 + Math.random() * 0.1)).toFixed(2);
-    const stopLoss = (currentPrice * (1 - stopLossPercent/100)).toFixed(2);
-    const target = (currentPrice * (1 + targetPercent/100)).toFixed(2);
-    const riskReward = (targetPercent / stopLossPercent).toFixed(2);
+    // ICT-based calculations
+    const stopLoss = currentPrice - (atr * 1.5);
+    const target1 = currentPrice + (atr * 2);
+    const target2 = currentPrice + (atr * 3);
+    const riskReward = ((target1 - currentPrice) / (currentPrice - stopLoss)).toFixed(2);
+    const positionSize = (1000 / (currentPrice - stopLoss)).toFixed(0); // $1000 risk
     
     return {
-      currentPrice: `$${currentPrice}`,
-      stopLoss: `$${stopLoss}`,
-      target: `$${target}`,
-      stopLossPercent: `${stopLossPercent}%`,
-      targetPercent: `${targetPercent}%`,
-      riskReward: `1:${riskReward}`,
-      riskLevel: stopLossPercent > 5 ? 'HIGH' : stopLossPercent > 3 ? 'MEDIUM' : 'LOW',
-      confidence: (70 + Math.random() * 25).toFixed(0) + '%',
-      entryZone: `${(currentPrice * 0.995).toFixed(2)}-${(currentPrice * 1.005).toFixed(2)}`,
-      timeFrame: ['Intraday', 'Swing (3-5 days)', 'Position (1-2 weeks)'][Math.floor(Math.random() * 3)]
+      currentPrice: currentPrice.toFixed(2),
+      stopLoss: stopLoss.toFixed(2),
+      target1: target1.toFixed(2),
+      target2: target2.toFixed(2),
+      riskReward,
+      positionSize,
+      riskAmount: ((currentPrice - stopLoss) * positionSize).toFixed(2)
     };
   };
 
-  // Advanced analysis generator
-  const generateAdvancedAnalysis = (asset) => {
+  // Technical Analysis
+  const generateTechnicalAnalysis = (asset) => {
     const analyses = [
-      "Price action shows strong bullish momentum with FVG formation",
-      "Market structure shift detected - optimal entry during Kill Zone",
-      "Liquidity sweep followed by fair value gap",
-      "Institutional order blocks identified at key levels",
-      "Volume profile shows high volume node acting as support",
-      "Smart money divergence detected on lower timeframes",
-      "Market maker buy model activated",
-      "Optimal trade entry with positive risk-reward ratio",
-      "Confluences: Order Block + FVG + EQH/L",
-      "Market in discount phase - expecting premium expansion"
+      "Strong bullish order block at support - Institutional buying zone identified",
+      "Fair Value Gap present - Price likely to fill gap before continuation",
+      "Market Structure Break confirmed - Higher highs and higher lows pattern",
+      "Liquidity sweep completed - Stop hunt finished, ready for reversal",
+      "Premium/Discount array aligned - Currently in discount zone for entries",
+      "Breaker block formation - Previous resistance now acting as support"
     ];
     
-    const warnings = [
-      "Watch for news events this week",
-      "Approaching major resistance level",
-      "Volume declining - confirm breakout",
-      "Check earnings date before entry"
+    const confluences = [
+      "🎯 Triple confluence: Order Block + FVG + Liquidity Sweep",
+      "⚡ Kill Zone timing perfect for entry execution",
+      "📊 Volume profile shows institutional accumulation",
+      "🧠 AI sentiment extremely bullish across all timeframes",
+      "💎 Smart Money Concepts align with price action"
     ];
     
     return {
-      technical: analyses[Math.floor(Math.random() * analyses.length)],
-      keyLevels: {
-        support: [`$${(parseFloat(asset.tradeParams.currentPrice.replace('$', '')) * 0.97).toFixed(2)}`, 
-                 `$${(parseFloat(asset.tradeParams.currentPrice.replace('$', '')) * 0.95).toFixed(2)}`],
-        resistance: [`$${(parseFloat(asset.tradeParams.currentPrice.replace('$', '')) * 1.03).toFixed(2)}`, 
-                    `$${(parseFloat(asset.tradeParams.currentPrice.replace('$', '')) * 1.05).toFixed(2)}`]
-      },
-      warning: warnings[Math.floor(Math.random() * warnings.length)],
-      setupType: ['Breakout', 'Pullback', 'Retest', 'Reversal'][Math.floor(Math.random() * 4)],
-      probability: (60 + Math.random() * 35).toFixed(0) + '%'
+      primary: analyses[Math.floor(Math.random() * analyses.length)],
+      secondary: analyses[Math.floor(Math.random() * analyses.length)],
+      confluence: confluences[Math.floor(Math.random() * confluences.length)]
     };
   };
 
-  // Simulated real-time data with enhanced features
+  // Simulated real-time data with 2025 features
   const generateAdvancedData = () => {
     const top21Stocks = [
-      { symbol: 'NVDA', name: 'NVIDIA', sector: 'AI/Semiconductors', basePrice: 850 },
-      { symbol: 'MSFT', name: 'Microsoft', sector: 'Cloud/AI', basePrice: 420 },
-      { symbol: 'GOOGL', name: 'Alphabet', sector: 'AI/Search', basePrice: 180 },
+      { symbol: 'NVDA', name: 'NVIDIA', sector: 'AI/Semiconductors', basePrice: 875 },
+      { symbol: 'MSFT', name: 'Microsoft', sector: 'Cloud/AI', basePrice: 425 },
+      { symbol: 'GOOGL', name: 'Alphabet', sector: 'AI/Search', basePrice: 165 },
       { symbol: 'META', name: 'Meta Platforms', sector: 'Social/VR', basePrice: 485 },
-      { symbol: 'AAPL', name: 'Apple', sector: 'Consumer Tech', basePrice: 210 },
-      { symbol: 'PLTR', name: 'Palantir', sector: 'AI/Defense', basePrice: 25 },
-      { symbol: 'SNOW', name: 'Snowflake', sector: 'Cloud Data', basePrice: 170 },
+      { symbol: 'AAPL', name: 'Apple', sector: 'Consumer Tech', basePrice: 195 },
+      { symbol: 'PLTR', name: 'Palantir', sector: 'AI/Defense', basePrice: 68 },
+      { symbol: 'SNOW', name: 'Snowflake', sector: 'Cloud Data', basePrice: 175 },
       { symbol: 'AI', name: 'C3.ai', sector: 'Enterprise AI', basePrice: 32 },
-      { symbol: 'AVGO', name: 'Broadcom', sector: 'Semiconductors', basePrice: 1350 },
-      { symbol: 'V', name: 'Visa', sector: 'FinTech', basePrice: 275 },
-      { symbol: 'MA', name: 'Mastercard', sector: 'FinTech', basePrice: 460 },
-      { symbol: 'BLK', name: 'BlackRock', sector: 'Asset Mgmt', basePrice: 820 },
-      { symbol: 'COIN', name: 'Coinbase', sector: 'Crypto Exchange', basePrice: 240 },
-      { symbol: 'TSLA', name: 'Tesla', sector: 'EV/Energy', basePrice: 180 },
-      { symbol: 'NEE', name: 'NextEra Energy', sector: 'Clean Energy', basePrice: 65 },
-      { symbol: 'ENPH', name: 'Enphase', sector: 'Solar', basePrice: 120 },
-      { symbol: 'LLY', name: 'Eli Lilly', sector: 'Biotech', basePrice: 780 },
-      { symbol: 'ISRG', name: 'Intuitive Surgical', sector: 'MedTech', basePrice: 420 },
-      { symbol: 'VRTX', name: 'Vertex Pharma', sector: 'Biotech', basePrice: 450 },
+      { symbol: 'AVGO', name: 'Broadcom', sector: 'Semiconductors', basePrice: 220 },
+      { symbol: 'V', name: 'Visa', sector: 'FinTech', basePrice: 285 },
+      { symbol: 'MA', name: 'Mastercard', sector: 'FinTech', basePrice: 475 },
+      { symbol: 'BLK', name: 'BlackRock', sector: 'Asset Mgmt', basePrice: 925 },
+      { symbol: 'COIN', name: 'Coinbase', sector: 'Crypto Exchange', basePrice: 245 },
+      { symbol: 'TSLA', name: 'Tesla', sector: 'EV/Energy', basePrice: 385 },
+      { symbol: 'NEE', name: 'NextEra Energy', sector: 'Clean Energy', basePrice: 78 },
+      { symbol: 'ENPH', name: 'Enphase', sector: 'Solar', basePrice: 115 },
+      { symbol: 'LLY', name: 'Eli Lilly', sector: 'Biotech', basePrice: 785 },
+      { symbol: 'ISRG', name: 'Intuitive Surgical', sector: 'MedTech', basePrice: 525 },
+      { symbol: 'VRTX', name: 'Vertex Pharma', sector: 'Biotech', basePrice: 445 },
       { symbol: 'AMD', name: 'AMD', sector: 'Semiconductors', basePrice: 165 },
-      { symbol: 'QCOM', name: 'Qualcomm', sector: '5G/Mobile', basePrice: 185 }
+      { symbol: 'QCOM', name: 'Qualcomm', sector: '5G/Mobile', basePrice: 175 }
     ];
 
     return top21Stocks.map((stock, idx) => {
-      const tradeParams = generateTradeParameters(stock.basePrice);
-      const analysis = generateAdvancedAnalysis({ tradeParams });
+      const price = stock.basePrice * (1 + (Math.random() - 0.5) * 0.05);
+      const tradeLevels = calculateTradeLevels(price);
+      const analysis = generateTechnicalAnalysis(stock);
       
       return {
         ...stock,
@@ -135,7 +114,7 @@ const ICTAdvancedAnalyzer = () => {
         optionsFlow: Math.random() > 0.5 ? 'Bullish' : 'Neutral',
         earningsDate: new Date(Date.now() + Math.random() * 90 * 24 * 60 * 60 * 1000).toLocaleDateString(),
         whaleActivity: Math.random() > 0.7 ? 'Detected' : 'Normal',
-        tradeParams,
+        ...tradeLevels,
         analysis
       };
     });
@@ -143,63 +122,84 @@ const ICTAdvancedAnalyzer = () => {
 
   const [assets, setAssets] = useState(generateAdvancedData());
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAssets(generateAdvancedData());
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Telegram Alert Function
-  const sendTelegramAlert = (asset) => {
-    if (!telegramConfig.enabled) {
-      alert('Please enable Telegram alerts first!');
+  // Send Telegram Alert
+  const sendTelegramAlert = async (asset) => {
+    if (!telegramBotToken || !telegramChatId) {
+      alert('Please configure Telegram Bot Token and Chat ID in settings!');
       return;
     }
-
+    
     const message = `
-🚨 **TRADE ALERT** 🚨
+🚨 *STRONG BUY ALERT* 🚨
 
-📈 **${asset.symbol} - ${asset.name}**
-📊 Signal: ${asset.signal}
-📉 Trend: ${asset.trend}
+📊 *${asset.symbol}* - ${asset.name}
+💼 Sector: ${asset.sector}
 
-💰 **TRADE PARAMETERS**
-• Current Price: ${asset.tradeParams.currentPrice}
-• Stop Loss: ${asset.tradeParams.stopLoss} (${asset.tradeParams.stopLossPercent})
-• Target: ${asset.tradeParams.target} (${asset.tradeParams.targetPercent})
-• Risk-Reward: ${asset.tradeParams.riskReward}
-• Entry Zone: ${asset.tradeParams.entryZone}
-• Time Frame: ${asset.tradeParams.timeFrame}
+💰 *Trading Levels:*
+Current Price: $${asset.currentPrice}
+🛑 Stop Loss: $${asset.stopLoss}
+🎯 Target 1: $${asset.target1}
+🎯 Target 2: $${asset.target2}
 
-⚠️ **RISK ANALYSIS**
-• Risk Level: ${asset.tradeParams.riskLevel}
-• Confidence: ${asset.tradeParams.confidence}
-• Risk Score: ${asset.riskScore}/10
+📈 *Risk Management:*
+Risk/Reward: ${asset.riskReward}:1
+Position Size: ${asset.positionSize} shares
+Risk Amount: $${asset.riskAmount}
 
-🎯 **ANALYSIS**
-${asset.analysis.technical}
-• Setup: ${asset.analysis.setupType}
-• Probability: ${asset.analysis.probability}
-• Next Optimal: ${asset.nextOptimal}
+🧠 *Analysis:*
+${asset.analysis.primary}
 
-⏰ **TIMING**
-${currentTime.toLocaleTimeString()} | ${currentTime.toLocaleDateString()}
+✅ ${asset.analysis.confluence}
 
-#${asset.symbol} #TradeAlert #ICT
-    `;
+⚡ *Scores:*
+Total: ${asset.totalScore} | AI: ${asset.aiScore} | ICT: ${asset.ictScore}
 
-    // Simulate sending to Telegram (In real implementation, use Telegram Bot API)
-    console.log('Telegram Alert Sent:', message);
-    
-    setAlertsSent(prev => [...prev, {
-      symbol: asset.symbol,
-      time: new Date().toLocaleTimeString(),
-      price: asset.tradeParams.currentPrice
-    }]);
-    
-    alert(`Telegram alert sent for ${asset.symbol}! Check console for details.`);
+🔥 Next Optimal Entry: ${asset.nextOptimal}
+📊 Volume: ${asset.volumeProfile}
+🏦 Institutional Flow: ${asset.institutionalFlow}
+
+⏰ Time: ${new Date().toLocaleString('en-IN')}
+`;
+
+    try {
+      const response = await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: telegramChatId,
+          text: message,
+          parse_mode: 'Markdown'
+        })
+      });
+      
+      if (response.ok) {
+        alert(`✅ Alert sent successfully for ${asset.symbol}!`);
+      } else {
+        alert('❌ Failed to send alert. Check your Bot Token and Chat ID.');
+      }
+    } catch (error) {
+      console.error('Telegram alert error:', error);
+      alert('❌ Error sending alert. Check console for details.');
+    }
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newAssets = generateAdvancedData();
+      setAssets(newAssets);
+      
+      // Check for STRONG BUY signals and send alerts
+      if (telegramBotToken && telegramChatId) {
+        newAssets.forEach(asset => {
+          if (asset.signal === '🟢 STRONG BUY' && !alertSent[asset.symbol]) {
+            sendTelegramAlert(asset);
+            setAlertSent(prev => ({ ...prev, [asset.symbol]: true }));
+          }
+        });
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [alertSent, telegramBotToken, telegramChatId]);
 
   const sessions = [
     { name: 'Asian KZ', active: false, time: '6:30-9:30 AM IST', priority: 3 },
@@ -213,94 +213,78 @@ ${currentTime.toLocaleTimeString()} | ${currentTime.toLocaleDateString()}
     strongSignals: assets.filter(a => a.signal.includes('STRONG')).length,
     averageAccuracy: '87.3%',
     activeSession: 'London + NY Overlap',
-    marketRegime: 'TRENDING',
-    totalAlerts: alertsSent.length,
-    profitableTrades: Math.floor(alertsSent.length * 0.85)
+    marketRegime: 'TRENDING'
   };
 
-  // Color Legend Component
-  const ColorLegend = () => (
-    <div className="mb-6 bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-lg p-4 border border-neon-green-500">
-      <h3 className="font-bold mb-3 text-neon-green-400 flex items-center">
-        <Filter className="mr-2" /> Color Coding Legend
-      </h3>
-      <div className="grid grid-cols-4 gap-3 text-sm">
-        <div className="flex items-center">
-          <div className="w-3 h-3 bg-neon-green-500 rounded mr-2"></div>
-          <span>Strong Buy/Bullish</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-3 h-3 bg-red-500 rounded mr-2"></div>
-          <span>Bearish/High Risk</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-3 h-3 bg-yellow-500 rounded mr-2"></div>
-          <span>Hold/Medium Risk</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-3 h-3 bg-purple-500 rounded mr-2"></div>
-          <span>High Volume</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-3 h-3 bg-blue-500 rounded mr-2"></div>
-          <span>Medium Volume</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-3 h-3 bg-cyan-400 rounded mr-2"></div>
-          <span>AI Analysis</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-3 h-3 bg-orange-500 rounded mr-2"></div>
-          <span>Active Session</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-3 h-3 bg-pink-500 rounded mr-2"></div>
-          <span>Institutional Flow</span>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-900 to-gray-900 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-emerald-950 to-gray-900 text-white p-6">
       {/* Header */}
-      <div className="mb-8 border-b border-neon-green-500 pb-6">
+      <div className="mb-8 border-b border-emerald-500 pb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-neon-green-400 to-cyan-500 bg-clip-text text-transparent">
-              <Brain className="inline mr-3" />
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">
               ICT Advanced Market Analyzer
             </h1>
-            <p className="text-gray-300 text-sm mt-2">2025-26 Edition | AI-Powered Stock Selection with Risk Management</p>
+            <p className="text-gray-400 text-sm mt-2">2025-26 Edition | AI-Powered Stock Selection</p>
           </div>
           <div className="flex items-center gap-4">
+            <button 
+              onClick={() => setShowSettings(!showSettings)}
+              className="p-2 bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors"
+            >
+              {showSettings ? <Settings className="w-6 h-6" /> : <Bell className="w-6 h-6" />}
+            </button>
             <div className="text-right">
-              <div className="text-2xl font-mono text-neon-green-400">{currentTime.toLocaleTimeString('en-IN')}</div>
-              <div className="text-sm text-gray-400">{currentTime.toLocaleDateString('en-IN', {
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+              <div className="text-2xl font-mono text-emerald-400">{currentTime.toLocaleTimeString('en-IN')}</div>
+              <div className="text-sm text-gray-400">{currentTime.toLocaleDateString('en-IN', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
               })}</div>
             </div>
-            <button
-              onClick={() => setShowTelegramModal(true)}
-              className="bg-gradient-to-r from-green-600 to-neon-green-500 hover:from-green-700 hover:to-neon-green-600 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 transition-all duration-300"
-            >
-              <Send className="w-4 h-4" />
-              Telegram Setup
-            </button>
           </div>
         </div>
-        
+
+        {/* Telegram Settings */}
+        {showSettings && (
+          <div className="bg-gray-800 bg-opacity-70 backdrop-blur-sm rounded-lg p-6 mb-4 border border-emerald-500">
+            <h3 className="text-xl font-bold mb-4 text-emerald-400">⚙️ Telegram Alert Settings</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Bot Token</label>
+                <input
+                  type="text"
+                  value={telegramBotToken}
+                  onChange={(e) => setTelegramBotToken(e.target.value)}
+                  placeholder="Enter your bot token"
+                  className="w-full bg-gray-700 border border-emerald-500 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-gray-400 mb-2">Chat ID</label>
+                <input
+                  type="text"
+                  value={telegramChatId}
+                  onChange={(e) => setTelegramChatId(e.target.value)}
+                  placeholder="Enter your chat ID"
+                  className="w-full bg-gray-700 border border-emerald-500 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+            </div>
+            <p className="text-xs text-gray-400 mt-3">
+              💡 Get Bot Token from @BotFather | Get Chat ID from @userinfobot on Telegram
+            </p>
+          </div>
+        )}
+
         {/* Key Stats */}
-        <div className="grid grid-cols-6 gap-4 mt-6">
+        <div className="grid grid-cols-5 gap-4 mt-6">
           {[
-            { label: 'Total Assets', value: marketStats.totalAssets, icon: BarChart3, color: 'neon-green' },
+            { label: 'Total Assets', value: marketStats.totalAssets, icon: BarChart3, color: 'emerald' },
             { label: 'Strong Signals', value: marketStats.strongSignals, icon: Zap, color: 'green' },
             { label: 'Avg Accuracy', value: marketStats.averageAccuracy, icon: Target, color: 'cyan' },
-            { label: 'Active Session', value: marketStats.activeSession, icon: Clock, color: 'orange' },
-            { label: 'Market Regime', value: marketStats.marketRegime, icon: Activity, color: 'neon-green' },
-            { label: 'Alerts Sent', value: marketStats.totalAlerts, icon: Bell, color: 'purple' }
+            { label: 'Active Session', value: marketStats.activeSession, icon: Clock, color: 'yellow' },
+            { label: 'Market Regime', value: marketStats.marketRegime, icon: Activity, color: 'red' }
           ].map((stat, idx) => (
-            <div key={idx} className={`bg-gray-800 bg-opacity-50 backdrop-blur-sm border border-${stat.color}-500 rounded-lg p-4 hover:scale-[1.02] transition-transform duration-300`}>
+            <div key={idx} className={`bg-gray-800 bg-opacity-60 backdrop-blur-sm border-2 border-${stat.color}-500 rounded-lg p-4 hover:border-${stat.color}-400 transition-all`}>
               <div className="flex items-center justify-between mb-2">
                 <stat.icon className={`w-5 h-5 text-${stat.color}-400`} />
                 <span className={`text-xs text-${stat.color}-400 font-semibold`}>{stat.label}</span>
@@ -311,25 +295,22 @@ ${currentTime.toLocaleTimeString()} | ${currentTime.toLocaleDateString()}
         </div>
       </div>
 
-      {/* Color Legend */}
-      <ColorLegend />
-
       {/* Kill Zones */}
-      <div className="mb-8 bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-lg p-6 border border-neon-green-500">
-        <h2 className="text-xl font-bold mb-4 flex items-center text-neon-green-400">
+      <div className="mb-8 bg-gray-800 bg-opacity-60 backdrop-blur-sm rounded-lg p-6 border-2 border-emerald-500">
+        <h2 className="text-xl font-bold mb-4 flex items-center text-emerald-400">
           <Clock className="mr-2" /> Trading Sessions (Kill Zones)
         </h2>
         <div className="grid grid-cols-4 gap-4">
           {sessions.map((session, idx) => (
-            <div key={idx} className={`p-4 rounded-lg border-2 ${session.active ? 'border-neon-green-500 bg-green-900 bg-opacity-30' : 'border-gray-600 bg-gray-700 bg-opacity-30'} hover:border-neon-green-400 transition-colors`}>
+            <div key={idx} className={`p-4 rounded-lg border-2 ${session.active ? 'border-green-400 bg-green-900 bg-opacity-40 shadow-lg shadow-green-500/50' : 'border-gray-600 bg-gray-700 bg-opacity-30'}`}>
               <div className="flex items-center justify-between mb-2">
                 <span className="font-bold">{session.name}</span>
-                <span className={`px-2 py-1 rounded text-xs ${session.active ? 'bg-neon-green-500' : 'bg-gray-600'}`}>
+                <span className={`px-2 py-1 rounded text-xs font-bold ${session.active ? 'bg-green-500 animate-pulse' : 'bg-gray-600'}`}>
                   {session.active ? 'ACTIVE' : 'CLOSED'}
                 </span>
               </div>
               <div className="text-sm text-gray-300">{session.time}</div>
-              <div className="text-xs text-gray-400 mt-1">Priority: {'★'.repeat(session.priority)}</div>
+              <div className="text-xs text-gray-400 mt-1">Priority: {'⭐'.repeat(session.priority)}</div>
             </div>
           ))}
         </div>
@@ -337,414 +318,186 @@ ${currentTime.toLocaleTimeString()} | ${currentTime.toLocaleDateString()}
 
       {/* Controls */}
       <div className="mb-6 flex gap-4">
-        <select
+        <select 
           value={selectedMarket}
           onChange={(e) => setSelectedMarket(e.target.value)}
-          className="bg-gray-800 border border-neon-green-500 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-neon-green-500"
+          className="bg-gray-800 border-2 border-emerald-500 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
         >
           <option>Stocks</option>
           <option>Crypto</option>
           <option>Forex</option>
         </select>
-        <select
+        <select 
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="bg-gray-800 border border-neon-green-500 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-neon-green-500"
+          className="bg-gray-800 border-2 border-emerald-500 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
         >
           <option>Total Score</option>
+          <option>AI Score</option>
           <option>Risk Score</option>
-          <option>Profit Potential</option>
           <option>Volume Profile</option>
         </select>
-        <button className="bg-gradient-to-r from-gray-800 to-gray-700 border border-neon-green-500 rounded-lg px-4 py-2 text-white hover:bg-gray-700 transition-colors flex items-center gap-2">
-          <Settings className="w-4 h-4" />
-          More Filters
-        </button>
       </div>
 
       {/* Assets Table */}
-      <div className="bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-lg border border-neon-green-500 overflow-hidden">
+      <div className="bg-gray-800 bg-opacity-60 backdrop-blur-sm rounded-lg border-2 border-emerald-500 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-green-900 bg-opacity-50">
+            <thead className="bg-emerald-900 bg-opacity-70">
               <tr>
                 <th className="p-3 text-left">Rank</th>
                 <th className="p-3 text-left">Symbol</th>
+                <th className="p-3 text-left">Sector</th>
                 <th className="p-3 text-left">Current Price</th>
                 <th className="p-3 text-left">Stop Loss</th>
                 <th className="p-3 text-left">Target</th>
-                <th className="p-3 text-left">Risk-Reward</th>
+                <th className="p-3 text-left">R:R</th>
                 <th className="p-3 text-left">Signal</th>
                 <th className="p-3 text-left">Risk</th>
                 <th className="p-3 text-left">Volume</th>
-                <th className="p-3 text-left">Alert</th>
                 <th className="p-3 text-left">Details</th>
               </tr>
             </thead>
             <tbody>
               {assets.map((asset, idx) => (
                 <React.Fragment key={idx}>
-                  <tr className={`border-b border-gray-700 hover:bg-gray-700 hover:bg-opacity-50 transition-colors ${idx < 7 ? 'bg-green-900 bg-opacity-20' : ''}`}>
+                  <tr className={`border-b border-gray-700 hover:bg-emerald-900 hover:bg-opacity-30 transition-colors ${idx < 7 ? 'bg-green-900 bg-opacity-30 border-l-4 border-l-green-500' : ''}`}>
                     <td className="p-3">
-                      <span className={`font-bold ${idx < 3 ? 'text-neon-green-400' : idx < 7 ? 'text-green-400' : 'text-gray-300'}`}>
+                      <span className={`font-bold text-lg ${idx < 3 ? 'text-yellow-400' : idx < 7 ? 'text-green-400' : 'text-gray-400'}`}>
                         #{asset.rank}
                       </span>
                     </td>
                     <td className="p-3">
-                      <div className="font-bold text-neon-green-300">{asset.symbol}</div>
+                      <div className="font-bold text-emerald-400 text-lg">{asset.symbol}</div>
                       <div className="text-xs text-gray-400">{asset.name}</div>
-                      <div className="text-xs text-cyan-400">{asset.sector}</div>
+                    </td>
+                    <td className="p-3 text-sm text-gray-300">{asset.sector}</td>
+                    <td className="p-3">
+                      <div className="text-lg font-bold text-cyan-400">${asset.currentPrice}</div>
+                      <div className="text-xs text-gray-400">Live</div>
                     </td>
                     <td className="p-3">
-                      <div className="font-bold text-white">{asset.tradeParams.currentPrice}</div>
-                      <div className={`text-xs ${asset.trend.includes('BULLISH') ? 'text-neon-green-400' : 'text-red-400'}`}>
-                        {asset.trend}
-                      </div>
+                      <div className="text-sm font-semibold text-red-400">${asset.stopLoss}</div>
+                      <div className="text-xs text-gray-500">SL</div>
                     </td>
                     <td className="p-3">
-                      <div className="font-bold text-red-400">{asset.tradeParams.stopLoss}</div>
-                      <div className="text-xs text-gray-400">{asset.tradeParams.stopLossPercent}</div>
+                      <div className="text-sm font-semibold text-green-400">${asset.target1}</div>
+                      <div className="text-xs text-gray-500">T1</div>
                     </td>
                     <td className="p-3">
-                      <div className="font-bold text-neon-green-400">{asset.tradeParams.target}</div>
-                      <div className="text-xs text-gray-400">{asset.tradeParams.targetPercent}</div>
+                      <span className={`px-2 py-1 rounded font-bold ${
+                        parseFloat(asset.riskReward) >= 3 ? 'bg-green-600 text-white' : 
+                        parseFloat(asset.riskReward) >= 2 ? 'bg-yellow-600 text-white' : 'bg-red-600 text-white'
+                      }`}>
+                        {asset.riskReward}:1
+                      </span>
                     </td>
                     <td className="p-3">
-                      <div className={`font-bold ${parseFloat(asset.tradeParams.riskReward.split(':')[1]) > 2 ? 'text-neon-green-400' : 'text-yellow-400'}`}>
-                        {asset.tradeParams.riskReward}
-                      </div>
-                      <div className="text-xs text-gray-400">R:R Ratio</div>
-                    </td>
-                    <td className="p-3">
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${asset.signal.includes('STRONG') ? 'bg-gradient-to-r from-green-600 to-neon-green-500' : asset.signal.includes('BUY') ? 'bg-green-700' : 'bg-yellow-600'}`}>
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                        asset.signal.includes('STRONG') ? 'bg-green-500 text-white shadow-lg shadow-green-500/50 animate-pulse' : 
+                        asset.signal.includes('BUY') ? 'bg-green-600 text-white' : 'bg-yellow-600 text-black'
+                      }`}>
                         {asset.signal}
                       </span>
                     </td>
                     <td className="p-3">
-                      <div className="flex flex-col gap-1">
-                        <span className={`font-bold ${parseFloat(asset.riskScore) < 4 ? 'text-neon-green-400' : parseFloat(asset.riskScore) < 6 ? 'text-yellow-400' : 'text-red-400'}`}>
-                          {asset.riskScore}/10
-                        </span>
-                        <span className={`text-xs px-2 py-1 rounded ${asset.tradeParams.riskLevel === 'LOW' ? 'bg-green-900' : asset.tradeParams.riskLevel === 'MEDIUM' ? 'bg-yellow-900' : 'bg-red-900'}`}>
-                          {asset.tradeParams.riskLevel}
-                        </span>
-                      </div>
+                      <span className={`font-bold ${parseFloat(asset.riskScore) < 4 ? 'text-green-400' : parseFloat(asset.riskScore) < 6 ? 'text-yellow-400' : 'text-red-400'}`}>
+                        {asset.riskScore}/10
+                      </span>
                     </td>
                     <td className="p-3">
-                      <span className={`px-3 py-1 rounded-full text-xs ${asset.volumeProfile === 'Very High' ? 'bg-purple-600' : asset.volumeProfile === 'High' ? 'bg-blue-600' : 'bg-gray-600'}`}>
+                      <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                        asset.volumeProfile === 'Very High' ? 'bg-purple-600' : 
+                        asset.volumeProfile === 'High' ? 'bg-cyan-600' : 'bg-gray-600'
+                      }`}>
                         {asset.volumeProfile}
                       </span>
                     </td>
                     <td className="p-3">
                       <button
-                        onClick={() => sendTelegramAlert(asset)}
-                        className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 text-sm transition-all duration-300"
-                      >
-                        <Send className="w-3 h-3" />
-                        Alert
-                      </button>
-                    </td>
-                    <td className="p-3">
-                      <button
                         onClick={() => setExpandedAsset(expandedAsset === idx ? null : idx)}
-                        className="p-2 hover:bg-neon-green-500 hover:bg-opacity-20 rounded transition-colors"
+                        className="p-2 hover:bg-emerald-600 rounded-lg transition-colors border border-emerald-500"
                       >
-                        {expandedAsset === idx ? <ChevronUp className="w-5 h-5 text-neon-green-400" /> : <ChevronDown className="w-5 h-5 text-neon-green-400" />}
+                        {expandedAsset === idx ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                       </button>
                     </td>
                   </tr>
-                  
-                  {/* Expanded Details */}
                   {expandedAsset === idx && (
-                    <tr className="bg-gray-900 bg-opacity-80">
+                    <tr className="bg-gray-900 bg-opacity-95 border-l-4 border-l-emerald-500">
                       <td colSpan="11" className="p-6">
                         <div className="grid grid-cols-3 gap-6">
-                          {/* Trade Parameters */}
-                          <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg border border-neon-green-500">
-                            <h4 className="font-bold mb-4 text-neon-green-400 flex items-center">
-                              <Target className="mr-2" /> Trade Parameters
+                          {/* Trading Plan */}
+                          <div className="bg-emerald-900 bg-opacity-30 rounded-lg p-4 border border-emerald-500">
+                            <h4 className="font-bold mb-3 text-emerald-400 text-lg flex items-center">
+                              <Target className="mr-2" /> 📊 Trading Plan
                             </h4>
-                            <div className="space-y-3">
-                              <div className="flex justify-between items-center">
-                                <span className="text-gray-400">Current Price:</span>
-                                <span className="font-bold text-xl">{asset.tradeParams.currentPrice}</span>
+                            <div className="space-y-3 text-sm">
+                              <div className="flex justify-between bg-gray-800 p-2 rounded">
+                                <span className="text-gray-300">Entry Price:</span>
+                                <span className="font-bold text-cyan-400">${asset.currentPrice}</span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-gray-400 flex items-center">
-                                  <Loss className="w-4 h-4 mr-1 text-red-400" /> Stop Loss:
-                                </span>
-                                <span className="font-bold text-red-400">{asset.tradeParams.stopLoss}</span>
+                              <div className="flex justify-between bg-red-900 bg-opacity-40 p-2 rounded border border-red-500">
+                                <span className="text-gray-300">🛑 Stop Loss:</span>
+                                <span className="font-bold text-red-400">${asset.stopLoss}</span>
                               </div>
-                              <div className="flex justify-between items-center">
-                                <span className="text-gray-400 flex items-center">
-                                  <Profit className="w-4 h-4 mr-1 text-neon-green-400" /> Target:
-                                </span>
-                                <span className="font-bold text-neon-green-400">{asset.tradeParams.target}</span>
+                              <div className="flex justify-between bg-green-900 bg-opacity-40 p-2 rounded border border-green-500">
+                                <span className="text-gray-300">🎯 Target 1:</span>
+                                <span className="font-bold text-green-400">${asset.target1}</span>
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Entry Zone:</span>
-                                <span className="font-semibold">{asset.tradeParams.entryZone}</span>
+                              <div className="flex justify-between bg-green-900 bg-opacity-40 p-2 rounded border border-green-500">
+                                <span className="text-gray-300">🎯 Target 2:</span>
+                                <span className="font-bold text-green-400">${asset.target2}</span>
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Risk-Reward:</span>
-                                <span className={`font-bold ${parseFloat(asset.tradeParams.riskReward.split(':')[1]) > 2 ? 'text-neon-green-400' : 'text-yellow-400'}`}>
-                                  {asset.tradeParams.riskReward}
-                                </span>
+                              <div className="flex justify-between bg-yellow-900 bg-opacity-40 p-2 rounded border border-yellow-500">
+                                <span className="text-gray-300">Risk/Reward:</span>
+                                <span className="font-bold text-yellow-400">{asset.riskReward}:1</span>
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Time Frame:</span>
-                                <span className="font-semibold">{asset.tradeParams.timeFrame}</span>
+                              <div className="flex justify-between bg-purple-900 bg-opacity-40 p-2 rounded border border-purple-500">
+                                <span className="text-gray-300">Position Size:</span>
+                                <span className="font-bold text-purple-400">{asset.positionSize} shares</span>
                               </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Confidence:</span>
-                                <span className="font-bold text-cyan-400">{asset.tradeParams.confidence}</span>
+                              <div className="flex justify-between bg-orange-900 bg-opacity-40 p-2 rounded border border-orange-500">
+                                <span className="text-gray-300">Risk Amount:</span>
+                                <span className="font-bold text-orange-400">${asset.riskAmount}</span>
                               </div>
                             </div>
                           </div>
 
-                          {/* Advanced Analysis */}
-                          <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg border border-cyan-500">
-                            <h4 className="font-bold mb-4 text-cyan-400 flex items-center">
-                              <Brain className="mr-2" /> Advanced Analysis
+                          {/* ICT Analysis */}
+                          <div className="bg-cyan-900 bg-opacity-30 rounded-lg p-4 border border-cyan-500">
+                            <h4 className="font-bold mb-3 text-cyan-400 text-lg flex items-center">
+                              <Brain className="mr-2" /> 🧠 ICT Analysis
                             </h4>
-                            <div className="space-y-3">
-                              <div className="text-sm text-gray-300 bg-gray-900 p-3 rounded">
-                                {asset.analysis.technical}
+                            <div className="space-y-3 text-sm">
+                              <div className="bg-gray-800 p-3 rounded">
+                                <p className="text-emerald-300 font-semibold mb-1">Primary Setup:</p>
+                                <p className="text-gray-300 leading-relaxed">{asset.analysis.primary}</p>
                               </div>
-                              <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                  <div className="text-xs text-gray-400">Setup Type</div>
-                                  <div className="font-semibold">{asset.analysis.setupType}</div>
-                                </div>
-                                <div>
-                                  <div className="text-xs text-gray-400">Probability</div>
-                                  <div className="font-bold text-neon-green-400">{asset.analysis.probability}</div>
-                                </div>
+                              <div className="bg-gray-800 p-3 rounded">
+                                <p className="text-yellow-300 font-semibold mb-1">Secondary Signal:</p>
+                                <p className="text-gray-300 leading-relaxed">{asset.analysis.secondary}</p>
                               </div>
-                              <div>
-                                <div className="text-xs text-gray-400 mb-1">Key Levels</div>
-                                <div className="grid grid-cols-2 gap-2">
-                                  <div className="bg-red-900 bg-opacity-30 p-2 rounded">
-                                    <div className="text-xs text-gray-400">Support</div>
-                                    <div className="font-semibold">{asset.analysis.keyLevels.support.join(' | ')}</div>
-                                  </div>
-                                  <div className="bg-green-900 bg-opacity-30 p-2 rounded">
-                                    <div className="text-xs text-gray-400">Resistance</div>
-                                    <div className="font-semibold">{asset.analysis.keyLevels.resistance.join(' | ')}</div>
-                                  </div>
-                                </div>
+                              <div className="bg-green-900 bg-opacity-50 p-3 rounded border border-green-500">
+                                <p className="text-green-300 font-semibold">{asset.analysis.confluence}</p>
                               </div>
-                              <div className="text-xs text-yellow-400 bg-yellow-900 bg-opacity-20 p-2 rounded">
-                                ⚠️ {asset.analysis.warning}
+                              <div className="space-y-1">
+                                <div className="flex justify-between">
+                                  <span className="text-gray-400">ICT Score:</span>
+                                  <span className="font-bold text-emerald-400">{asset.ictScore}/100</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-400">AI Confidence:</span>
+                                  <span className="font-bold text-purple-400">{asset.aiScore}/100</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-400">Sentiment:</span>
+                                  <span className="font-bold text-cyan-400">{asset.sentimentScore}/100</span>
+                                </div>
                               </div>
                             </div>
                           </div>
 
-                          {/* Institutional Data & Action */}
-                          <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg border border-purple-500">
-                            <h4 className="font-bold mb-4 text-purple-400 flex items-center">
-                              <BarChart3 className="mr-2" /> Market Intelligence
-                            </h4>
-                            <div className="space-y-3">
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Institutional Flow:</span>
-                                <span className={`font-semibold ${asset.institutionalFlow === 'Buying' ? 'text-neon-green-400' : 'text-red-400'}`}>
-                                  {asset.institutionalFlow}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Dark Pool Activity:</span>
-                                <span className="font-semibold">{asset.darkPoolActivity}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Options Flow:</span>
-                                <span className="font-semibold">{asset.optionsFlow}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Whale Activity:</span>
-                                <span className={`font-semibold ${asset.whaleActivity === 'Detected' ? 'text-yellow-400' : 'text-gray-400'}`}>
-                                  {asset.whaleActivity}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Short Interest:</span>
-                                <span className="font-semibold">{asset.shortInterest}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Earnings Date:</span>
-                                <span className="font-semibold">{asset.earningsDate}</span>
-                              </div>
-                              <div className="mt-4">
-                                <button
-                                  onClick={() => sendTelegramAlert(asset)}
-                                  className="w-full bg-gradient-to-r from-green-600 to-neon-green-500 hover:from-green-700 hover:to-neon-green-600 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300"
-                                >
-                                  <Send className="w-4 h-4" />
-                                  Send Telegram Trade Alert
-                                </button>
-                                <div className="text-xs text-gray-400 text-center mt-2">
-                                  Next Optimal Entry: {asset.nextOptimal}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Recent Alerts */}
-      {alertsSent.length > 0 && (
-        <div className="mt-8 bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-lg border border-neon-green-500 p-6">
-          <h3 className="font-bold mb-4 text-neon-green-400 flex items-center">
-            <Bell className="mr-2" /> Recent Alerts Sent ({alertsSent.length})
-          </h3>
-          <div className="grid grid-cols-4 gap-4">
-            {alertsSent.slice(-4).reverse().map((alert, idx) => (
-              <div key={idx} className="bg-gray-700 bg-opacity-50 p-3 rounded border border-cyan-500">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-bold text-neon-green-300">{alert.symbol}</span>
-                  <span className="text-xs text-gray-400">{alert.time}</span>
-                </div>
-                <div className="text-sm">Price: {alert.price}</div>
-                <div className="text-xs text-cyan-400 mt-1">Alert sent via Telegram</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Telegram Configuration Modal */}
-      {showTelegramModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-900 border-2 border-neon-green-500 rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-xl font-bold mb-4 text-neon-green-400 flex items-center">
-              <Send className="mr-2" /> Telegram Alert Setup
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">Bot Token</label>
-                <input
-                  type="text"
-                  value={telegramConfig.token}
-                  onChange={(e) => setTelegramConfig({...telegramConfig, token: e.target.value})}
-                  className="w-full bg-gray-800 border border-neon-green-500 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-neon-green-500"
-                  placeholder="Enter your bot token"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-gray-400 mb-2">Chat ID</label>
-                <input
-                  type="text"
-                  value={telegramConfig.chatId}
-                  onChange={(e) => setTelegramConfig({...telegramConfig, chatId: e.target.value})}
-                  className="w-full bg-gray-800 border border-neon-green-500 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-neon-green-500"
-                  placeholder="Enter your chat ID"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="enableTelegram"
-                  checked={telegramConfig.enabled}
-                  onChange={(e) => setTelegramConfig({...telegramConfig, enabled: e.target.checked})}
-                  className="w-4 h-4 text-neon-green-500"
-                />
-                <label htmlFor="enableTelegram" className="text-gray-300">Enable Telegram Alerts</label>
-              </div>
-              <div className="text-xs text-gray-500">
-                💡 Create a Telegram bot via @BotFather and get token & chat ID
-              </div>
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={() => {
-                    setTelegramConfig({...telegramConfig, enabled: true});
-                    setShowTelegramModal(false);
-                    alert('Telegram alerts configured successfully!');
-                  }}
-                  className="flex-1 bg-gradient-to-r from-green-600 to-neon-green-500 hover:from-green-700 hover:to-neon-green-600 text-white font-bold py-2 px-4 rounded-lg transition-all duration-300"
-                >
-                  Save & Enable
-                </button>
-                <button
-                  onClick={() => setShowTelegramModal(false)}
-                  className="flex-1 bg-gray-800 border border-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Footer */}
-      <div className="mt-8 text-center text-gray-400 text-sm border-t border-neon-green-500 pt-6">
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          <div className="text-neon-green-400">
-            <div className="font-bold">🟢 Strong Buy</div>
-            <div className="text-xs">High confidence trades with optimal risk-reward</div>
-          </div>
-          <div className="text-yellow-400">
-            <div className="font-bold">🟡 Hold/Neutral</div>
-            <div className="text-xs">Wait for better confirmation or entry</div>
-          </div>
-          <div className="text-red-400">
-            <div className="font-bold">🔴 Avoid/High Risk</div>
-            <div className="text-xs">Poor risk-reward or unfavorable conditions</div>
-          </div>
-        </div>
-        <p>⚡ Live Data Updates Every 5 Seconds | 🧠 AI-Powered Analysis | 🎯 ICT Strategy Optimized</p>
-        <p className="mt-2 text-neon-green-300">💡 Focus on Top 7 STRONG BUY signals during active Kill Zones for best results</p>
-        <p className="mt-2 text-xs text-gray-500">⚠️ Trade with proper risk management. Past performance doesn't guarantee future results.</p>
-      </div>
-    </div>
-  );
-};
-
-// Add custom CSS for neon green theme
-const styles = `
-  @keyframes glow {
-    0%, 100% { text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00; }
-    50% { text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00; }
-  }
-  
-  .glow-text {
-    animation: glow 2s ease-in-out infinite alternate;
-  }
-  
-  .text-neon-green-300 { color: #00ff88; }
-  .text-neon-green-400 { color: #00ff00; }
-  .text-neon-green-500 { color: #00cc00; }
-  
-  .border-neon-green-500 { border-color: #00cc00; }
-  .border-cyan-500 { border-color: #06b6d4; }
-  
-  .bg-neon-green-500 { background-color: #00cc00; }
-  .bg-neon-green-600 { background-color: #00aa00; }
-  
-  .from-neon-green-400 { --tw-gradient-from: #00ff00; }
-  .to-neon-green-500 { --tw-gradient-to: #00cc00; }
-  
-  .hover\\:from-neon-green-600:hover { --tw-gradient-from: #00aa00; }
-  .hover\\:to-neon-green-700:hover { --tw-gradient-to: #008800; }
-  
-  .bg-gradient-to-r.from-neon-green-400.to-cyan-500 {
-    background-image: linear-gradient(to right, #00ff00, #06b6d4);
-  }
-`;
-
-// Add styles to head
-if (typeof document !== 'undefined') {
-  const styleSheet = document.createElement("style");
-  styleSheet.innerText = styles;
-  document.head.appendChild(styleSheet);
-}
-
-export default ICTAdvancedAnalyzer;
+                          {/* Market Data */}
+                          <div className="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-500">
+                            <h4 className="font-bold mb-3 text-purple-400 text-lg">🏦 Market Intelligence</h4>
+                            <div className="space-y-2 text-sm">
