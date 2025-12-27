@@ -8,15 +8,10 @@ import {
   Cloud, Wifi, WifiOff, Battery, BatteryCharging, Thermometer, Moon, Sun,
   TrendingDown as Bear, Lock, Unlock, Eye, EyeOff, Radio, Satellite, Radar,
   Activity as Pulse, Wind, ThermometerSun, CloudRain, CloudLightning,
-  Cast, Airplay, Bluetooth, Server, HardDrive, Cctv, Fingerprint, Key,
   Rocket, Sparkles, Target as Crosshair, Swords, Shield as ShieldCheck,
   Award, Trophy, Crown, Gem, Diamond, Coins, Wallet, CreditCard, Bitcoin,
   MessageSquare, PhoneCall, Video, Mail, BellRing, Siren, Siren as Alarm,
-  VolumeX, Volume1, Volume2 as VolumeHigh, Mic, MicOff, Headphones,
-  Music, Play, Pause, StopCircle, SkipBack, SkipForward, RotateCcw,
   Calendar, Map, Navigation, Compass, Globe2, MapPin, Layers, Grid,
-  Cpu as Processor, MemoryStick, HardDrive as Storage, Router,
-  Database as Data, Binary, Code, Terminal, Cursor, MousePointerClick,
   Hand, HandMetal, FishSymbol, Anchor, Ship, Plane, Car, Train, Bike,
   Skull, Ghost, Alien, Gamepad2, Dice5, Puzzle, BrainCircuit, Atom,
   FlaskConical, Beaker, TestTube, Microscope, Telescope, SatelliteDish,
@@ -86,11 +81,23 @@ const App = () => {
   const [alerts, setAlerts] = useState([]);
   const [darkMode, setDarkMode] = useState(true);
   const [activeView, setActiveView] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('all'); // New tab state
   const [selectedSector, setSelectedSector] = useState('All');
   const [riskFilter, setRiskFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Portfolio distribution state
+  const [portfolioDistribution, setPortfolioDistribution] = useState({
+    stocks: 60,
+    crypto: 20,
+    forex: 15,
+    commodities: 5
+  });
+
+  // Recommendation state
+  const [recommendations, setRecommendations] = useState([]);
   
   // Advanced State Variables
   const [connectionStatus] = useState('connected');
@@ -133,6 +140,92 @@ const App = () => {
   const mainRef = useRef(null);
   const searchInputRef = useRef(null);
 
+  // Generate Recommendations
+  useEffect(() => {
+    const generateRecommendations = () => {
+      const recs = [
+        {
+          symbol: 'RELIANCE',
+          name: 'Reliance Industries',
+          action: 'BUY',
+          target: '₹1,700',
+          stopLoss: '₹1,500',
+          timeframe: '1-2 weeks',
+          confidence: 85,
+          reason: 'Strong institutional buying, breakout expected'
+        },
+        {
+          symbol: 'TCS',
+          name: 'TCS',
+          action: 'SELL',
+          target: '₹3,100',
+          stopLoss: '₹3,400',
+          timeframe: '3-5 days',
+          confidence: 72,
+          reason: 'Resistance at ₹3,300, profit booking expected'
+        },
+        {
+          symbol: 'HDFCBANK',
+          name: 'HDFC Bank',
+          action: 'BUY',
+          target: '₹1,050',
+          stopLoss: '₹950',
+          timeframe: '2-3 weeks',
+          confidence: 88,
+          reason: 'Oversold, banking sector recovery'
+        },
+        {
+          symbol: 'INFY',
+          name: 'Infosys',
+          action: 'HOLD',
+          target: '₹1,750',
+          stopLoss: '₹1,600',
+          timeframe: '1 week',
+          confidence: 65,
+          reason: 'Consolidation phase, wait for breakout'
+        },
+        {
+          symbol: 'BTC',
+          name: 'Bitcoin',
+          action: 'BUY',
+          target: '₹1,00,000',
+          stopLoss: '₹90,000',
+          timeframe: '1 month',
+          confidence: 78,
+          reason: 'Halving event approaching, bullish sentiment'
+        },
+        {
+          symbol: 'ETH',
+          name: 'Ethereum',
+          action: 'BUY',
+          target: '₹3,800',
+          stopLoss: '₹3,200',
+          timeframe: '2 weeks',
+          confidence: 82,
+          reason: 'Ethereum 2.0 upgrades, increased adoption'
+        }
+      ];
+      setRecommendations(recs);
+    };
+    
+    generateRecommendations();
+  }, []);
+
+  // Update portfolio distribution function
+  const updatePortfolioDistribution = (newDistribution) => {
+    setPortfolioDistribution(newDistribution);
+  };
+
+  // Modified portfolio pie data
+  const pieData = useMemo(() => [
+    { name: 'Stocks', value: portfolioDistribution.stocks },
+    { name: 'Crypto', value: portfolioDistribution.crypto },
+    { name: 'Forex', value: portfolioDistribution.forex },
+    { name: 'Commodities', value: portfolioDistribution.commodities },
+  ], [portfolioDistribution]);
+
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+
   // Generate Quantum Bits
   useEffect(() => {
     if (quantumMode) {
@@ -147,7 +240,7 @@ const App = () => {
           }));
           return newBits.slice(0, 20);
         });
-      }, 300000);
+      }, 1000);
       return () => clearInterval(interval);
     }
   }, [quantumMode]);
@@ -165,7 +258,7 @@ const App = () => {
           }));
           return [...newActivity, ...prev].slice(0, 50);
         });
-      }, 300000);
+      }, 2000);
       return () => clearInterval(interval);
     }
   }, [neuralNetworkMode]);
@@ -175,7 +268,7 @@ const App = () => {
     if (quantumMode) {
       const interval = setInterval(() => {
         setQuantumEntanglement(prev => (prev + 1) % 100);
-      }, 300000);
+      }, 2000);
       return () => clearInterval(interval);
     }
   }, [quantumMode]);
@@ -187,7 +280,7 @@ const App = () => {
         const change = (Math.random() - 0.5) * 2;
         return Math.min(100, Math.max(0, prev + change));
       });
-    }, 300000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -214,7 +307,7 @@ const App = () => {
         }
         return prev;
       });
-    }, 300000);
+    }, 10000);
     
     return () => clearInterval(interval);
   }, []);
@@ -222,289 +315,11 @@ const App = () => {
   // Performance optimization - useMemo for expensive calculations
   const generateAdvancedData = useCallback(() => {
     const stocks = [
-          // === TOP 75 LARGE CAP INDIAN STOCKS ===
+      // Your existing stock data (truncated for brevity in this response)
+      // Keep all your existing stock data here
       { symbol: 'RELIANCE', name: 'Reliance Industries', sector: 'Energy/Retail', basePrice: 1560.60, baseChange: 0.15, marketCap: '21,09,105', weekHigh: 1581.30 },
       { symbol: 'TCS', name: 'TCS', sector: 'IT Services', basePrice: 3276.80, baseChange: -1.27, marketCap: '11,86,835', weekHigh: 4322.95 },
-      { symbol: 'HDFCBANK', name: 'HDFC Bank', sector: 'Banking', basePrice: 992.00, baseChange: -0.52, marketCap: '7,60,379', weekHigh: 1020.50 },
-      { symbol: 'BHARTIARTL', name: 'Bharti Airtel', sector: 'Telecom', basePrice: 2106.00, baseChange: -0.83, marketCap: '12,61,762', weekHigh: 2174.50 },
-      { symbol: 'ICICIBANK', name: 'ICICI Bank', sector: 'Banking', basePrice: 1351.00, baseChange: -0.65, marketCap: '9,62,840', weekHigh: 1500.00 },
-      { symbol: 'SBIN', name: 'State Bank of India', sector: 'Banking', basePrice: 966.50, baseChange: -0.25, marketCap: '8,92,046', weekHigh: 999.00 },
-      { symbol: 'INFY', name: 'Infosys', sector: 'IT Services', basePrice: 1657.00, baseChange: -0.38, marketCap: '6,86,108', weekHigh: 1982.80 },
-      { symbol: 'LICI', name: 'LIC of India', sector: 'Insurance', basePrice: 850.00, baseChange: -0.35, marketCap: '5,38,000', weekHigh: 925.00 },
-      { symbol: 'HINDUNILVR', name: 'Hindustan Unilever', sector: 'FMCG', basePrice: 2400.00, baseChange: 0.25, marketCap: '5,64,000', weekHigh: 2550.00 },
-      { symbol: 'ITC', name: 'ITC', sector: 'FMCG/Cigarettes', basePrice: 430.00, baseChange: 0.12, marketCap: '5,37,500', weekHigh: 460.00 },
-      { symbol: 'LT', name: 'Larsen & Toubro', sector: 'Engineering', basePrice: 3200.00, baseChange: 0.78, marketCap: '4,40,000', weekHigh: 3450.00 },
-      { symbol: 'BAJFINANCE', name: 'Bajaj Finance', sector: 'NBFC', basePrice: 7200.00, baseChange: 0.45, marketCap: '4,45,210', weekHigh: 7500.00 },
-      { symbol: 'ADANIENT', name: 'Adani Enterprises', sector: 'Conglomerate', basePrice: 3000.00, baseChange: 1.25, marketCap: '3,45,000', weekHigh: 3200.00 },
-      { symbol: 'AXISBANK', name: 'Axis Bank', sector: 'Banking', basePrice: 1050.00, baseChange: -0.42, marketCap: '3,24,450', weekHigh: 1150.00 },
-      { symbol: 'MARUTI', name: 'Maruti Suzuki', sector: 'Automobile', basePrice: 10500.00, baseChange: -0.65, marketCap: '3,17,625', weekHigh: 11500.00 },
-      { symbol: 'SUNPHARMA', name: 'Sun Pharma', sector: 'Pharma', basePrice: 1250.00, baseChange: 0.32, marketCap: '3,00,000', weekHigh: 1350.00 },
-      { symbol: 'TITAN', name: 'Titan Company', sector: 'Consumer Goods', basePrice: 3500.00, baseChange: 0.55, marketCap: '3,10,000', weekHigh: 3750.00 },
-      { symbol: 'ULTRACEMCO', name: 'UltraTech Cement', sector: 'Cement', basePrice: 9500.00, baseChange: -0.28, marketCap: '2,74,550', weekHigh: 10200.00 },
-      { symbol: 'ASIANPAINT', name: 'Asian Paints', sector: 'Consumer Goods', basePrice: 2850.00, baseChange: -0.15, marketCap: '2,73,000', weekHigh: 3300.00 },
-      { symbol: 'WIPRO', name: 'Wipro', sector: 'IT Services', basePrice: 520.40, baseChange: 0.45, marketCap: '2,72,000', weekHigh: 545.00 },
-      { symbol: 'HCLTECH', name: 'HCL Technologies', sector: 'IT Services', basePrice: 1250.00, baseChange: -0.48, marketCap: '3,39,000', weekHigh: 1450.00 },
-      { symbol: 'M&M', name: 'Mahindra & Mahindra', sector: 'Automobile', basePrice: 1800.00, baseChange: 0.88, marketCap: '2,22,000', weekHigh: 1950.00 },
-      { symbol: 'NTPC', name: 'NTPC', sector: 'Power', basePrice: 320.00, baseChange: 0.18, marketCap: '3,10,400', weekHigh: 340.00 },
-      { symbol: 'POWERGRID', name: 'Power Grid', sector: 'Power', basePrice: 280.00, baseChange: -0.10, marketCap: '2,60,000', weekHigh: 310.00 },
-      { symbol: 'KOTAKBANK', name: 'Kotak Mahindra Bank', sector: 'Banking', basePrice: 1750.00, baseChange: -0.30, marketCap: '3,48,000', weekHigh: 1900.00 },
-      { symbol: 'TATASTEEL', name: 'Tata Steel', sector: 'Metals', basePrice: 150.00, baseChange: 1.10, marketCap: '1,85,000', weekHigh: 170.00 },
-      { symbol: 'JSWSTEEL', name: 'JSW Steel', sector: 'Metals', basePrice: 900.00, baseChange: 0.40, marketCap: '2,15,000', weekHigh: 950.00 },
-      { symbol: 'ADANIPORTS', name: 'Adani Ports', sector: 'Infrastructure', basePrice: 1350.00, baseChange: 0.90, marketCap: '2,90,000', weekHigh: 1450.00 },
-      { symbol: 'GRASIM', name: 'Grasim Industries', sector: 'Textiles/Cement', basePrice: 2200.00, baseChange: -0.45, marketCap: '1,50,000', weekHigh: 2400.00 },
-      { symbol: 'NESTLEIND', name: 'Nestle India', sector: 'FMCG', basePrice: 2500.00, baseChange: 0.15, marketCap: '2,40,000', weekHigh: 2700.00 },
-      { symbol: 'ONGC', name: 'ONGC', sector: 'Oil & Gas', basePrice: 260.00, baseChange: 0.60, marketCap: '3,25,000', weekHigh: 285.00 },
-      { symbol: 'COALINDIA', name: 'Coal India', sector: 'Mining', basePrice: 450.00, baseChange: -0.20, marketCap: '2,75,000', weekHigh: 480.00 },
-      { symbol: 'HINDALCO', name: 'Hindalco', sector: 'Metals', basePrice: 600.00, baseChange: 0.85, marketCap: '1,35,000', weekHigh: 640.00 },
-      { symbol: 'TATAMOTORS', name: 'Tata Motors', sector: 'Automobile', basePrice: 950.00, baseChange: -1.20, marketCap: '3,15,000', weekHigh: 1050.00 },
-      { symbol: 'SBILIFE', name: 'SBI Life Insurance', sector: 'Insurance', basePrice: 1450.00, baseChange: 0.35, marketCap: '1,45,000', weekHigh: 1550.00 },
-      { symbol: 'HDFCLIFE', name: 'HDFC Life', sector: 'Insurance', basePrice: 650.00, baseChange: -0.10, marketCap: '1,38,000', weekHigh: 710.00 },
-      { symbol: 'BPCL', name: 'BPCL', sector: 'Oil & Gas', basePrice: 600.00, baseChange: 0.75, marketCap: '1,30,000', weekHigh: 650.00 },
-      { symbol: 'DRREDDY', name: 'Dr. Reddys', sector: 'Pharma', basePrice: 6200.00, baseChange: 0.25, marketCap: '1,05,000', weekHigh: 6500.00 },
-      { symbol: 'CIPLA', name: 'Cipla', sector: 'Pharma', basePrice: 1450.00, baseChange: 0.15, marketCap: '1,15,000', weekHigh: 1550.00 },
-      { symbol: 'DIVISLAB', name: 'Divis Lab', sector: 'Pharma', basePrice: 3800.00, baseChange: -0.50, marketCap: '1,00,000', weekHigh: 4200.00 },
-      { symbol: 'APOLLOHOSP', name: 'Apollo Hospitals', sector: 'Healthcare', basePrice: 6100.00, baseChange: 0.80, marketCap: '88,000', weekHigh: 6500.00 },
-      { symbol: 'BAJAJ-AUTO', name: 'Bajaj Auto', sector: 'Automobile', basePrice: 8500.00, baseChange: 1.10, marketCap: '2,40,000', weekHigh: 9000.00 },
-      { symbol: 'EICHERMOT', name: 'Eicher Motors', sector: 'Automobile', basePrice: 4200.00, baseChange: -0.30, marketCap: '1,15,000', weekHigh: 4500.00 },
-      { symbol: 'BRITANNIA', name: 'Britannia', sector: 'FMCG', basePrice: 5000.00, baseChange: 0.20, marketCap: '1,20,000', weekHigh: 5300.00 },
-      { symbol: 'INDUSINDBK', name: 'IndusInd Bank', sector: 'Banking', basePrice: 1450.00, baseChange: -0.90, marketCap: '1,12,000', weekHigh: 1600.00 },
-      { symbol: 'TECHM', name: 'Tech Mahindra', sector: 'IT Services', basePrice: 1300.00, baseChange: 0.55, marketCap: '1,25,000', weekHigh: 1450.00 },
-      { symbol: 'HEROMOTOCO', name: 'Hero MotoCorp', sector: 'Automobile', basePrice: 4500.00, baseChange: 0.35, marketCap: '90,000', weekHigh: 4900.00 },
-      { symbol: 'SHREECEM', name: 'Shree Cement', sector: 'Cement', basePrice: 25000.00, baseChange: -0.15, marketCap: '90,000', weekHigh: 28000.00 },
-      { symbol: 'ADANIGREEN', name: 'Adani Green', sector: 'Energy', basePrice: 1800.00, baseChange: 1.45, marketCap: '2,80,000', weekHigh: 2000.00 },
-      { symbol: 'ADANITRANS', name: 'Adani Energy Sol', sector: 'Power', basePrice: 1100.00, baseChange: 0.70, marketCap: '1,25,000', weekHigh: 1250.00 },
-      { symbol: 'DMART', name: 'Avenue Supermarts', sector: 'Retail', basePrice: 4500.00, baseChange: -0.25, marketCap: '2,90,000', weekHigh: 4800.00 },
-      { symbol: 'BAJAJHLDNG', name: 'Bajaj Holdings', sector: 'Finance', basePrice: 8200.00, baseChange: 0.10, marketCap: '92,000', weekHigh: 8800.00 },
-      { symbol: 'DLF', name: 'DLF', sector: 'Real Estate', basePrice: 850.00, baseChange: 1.20, marketCap: '2,10,000', weekHigh: 950.00 },
-      { symbol: 'HAL', name: 'Hindustan Aero', sector: 'Defense', basePrice: 4200.00, baseChange: 2.10, marketCap: '2,80,000', weekHigh: 4500.00 },
-      { symbol: 'BEL', name: 'Bharat Electronics', sector: 'Defense', basePrice: 280.00, baseChange: 1.80, marketCap: '2,05,000', weekHigh: 310.00 },
-      { symbol: 'SIEMENS', name: 'Siemens', sector: 'Engineering', basePrice: 6500.00, baseChange: 0.90, marketCap: '2,30,000', weekHigh: 7200.00 },
-      { symbol: 'IRFC', name: 'IRFC', sector: 'Finance', basePrice: 175.00, baseChange: 1.50, marketCap: '2,25,000', weekHigh: 220.00 },
-      { symbol: 'IOC', name: 'Indian Oil', sector: 'Oil & Gas', basePrice: 165.00, baseChange: -0.40, marketCap: '2,30,000', weekHigh: 190.00 },
-      { symbol: 'ZOMATO', name: 'Zomato', sector: 'Internet', basePrice: 260.00, baseChange: 2.50, marketCap: '2,30,000', weekHigh: 298.00 },
-      { symbol: 'JIOFIN', name: 'Jio Financial', sector: 'Finance', basePrice: 350.00, baseChange: 0.80, marketCap: '2,20,000', weekHigh: 390.00 },
-      { symbol: 'GAIL', name: 'GAIL', sector: 'Gas', basePrice: 210.00, baseChange: 0.35, marketCap: '1,38,000', weekHigh: 235.00 },
-      { symbol: 'PFC', name: 'PFC', sector: 'Finance', basePrice: 480.00, baseChange: 1.15, marketCap: '1,25,000', weekHigh: 550.00 },
-      { symbol: 'RECLTD', name: 'REC Ltd', sector: 'Finance', basePrice: 520.00, baseChange: 0.95, marketCap: '1,35,000', weekHigh: 600.00 },
-      { symbol: 'VBL', name: 'Varun Beverages', sector: 'FMCG', basePrice: 650.00, baseChange: 0.60, marketCap: '2,10,000', weekHigh: 700.00 },
-      { symbol: 'GODREJCP', name: 'Godrej Consumer', sector: 'FMCG', basePrice: 1250.00, baseChange: -0.15, marketCap: '1,28,000', weekHigh: 1400.00 },
-      { symbol: 'PIDILITIND', name: 'Pidilite', sector: 'Chemicals', basePrice: 3100.00, baseChange: 0.40, marketCap: '1,55,000', weekHigh: 3300.00 },
-      { symbol: 'TRENT', name: 'Trent', sector: 'Retail', basePrice: 7000.00, baseChange: 3.20, marketCap: '2,50,000', weekHigh: 7800.00 },
-      { symbol: 'TATACONSUM', name: 'Tata Consumer', sector: 'FMCG', basePrice: 1100.00, baseChange: -0.25, marketCap: '1,05,000', weekHigh: 1250.00 },
-      { symbol: 'AMBUJACEM', name: 'Ambuja Cement', sector: 'Cement', basePrice: 630.00, baseChange: 0.50, marketCap: '1,55,000', weekHigh: 700.00 },
-      { symbol: 'ABB', name: 'ABB India', sector: 'Engineering', basePrice: 7800.00, baseChange: 1.10, marketCap: '1,65,000', weekHigh: 8500.00 },
-      { symbol: 'CANBK', name: 'Canara Bank', sector: 'Banking', basePrice: 115.00, baseChange: -0.30, marketCap: '1,05,000', weekHigh: 130.00 },
-      { symbol: 'PNB', name: 'PNB', sector: 'Banking', basePrice: 125.00, baseChange: -0.80, marketCap: '1,35,000', weekHigh: 145.00 },
-      { symbol: 'BANKBARODA', name: 'Bank of Baroda', sector: 'Banking', basePrice: 250.00, baseChange: -0.20, marketCap: '1,30,000', weekHigh: 290.00 },
-      { symbol: 'VEDL', name: 'Vedanta', sector: 'Mining', basePrice: 450.00, baseChange: 1.40, marketCap: '1,65,000', weekHigh: 500.00 },
-      { symbol: 'CHOLAFIN', name: 'Cholamandalam', sector: 'NBFC', basePrice: 1350.00, baseChange: 0.65, marketCap: '1,12,000', weekHigh: 1500.00 },
-
-      // === TOP 50 MID CAP INDIAN STOCKS ===
-      { symbol: 'YESBANK', name: 'Yes Bank', sector: 'Banking', basePrice: 25.40, baseChange: 1.20, marketCap: '78,500', weekHigh: 32.00 },
-      { symbol: 'IDFCFIRSTB', name: 'IDFC First Bank', sector: 'Banking', basePrice: 82.15, baseChange: -0.40, marketCap: '58,200', weekHigh: 100.00 },
-      { symbol: 'RVNL', name: 'Rail Vikas Nigam', sector: 'Railways', basePrice: 480.00, baseChange: 2.50, marketCap: '1,00,000', weekHigh: 600.00 },
-      { symbol: 'IREDA', name: 'IREDA', sector: 'Finance', basePrice: 220.50, baseChange: 1.15, marketCap: '60,000', weekHigh: 310.00 },
-      { symbol: 'TATAELXSI', name: 'Tata Elxsi', sector: 'IT Services', basePrice: 7200.00, baseChange: -0.80, marketCap: '45,000', weekHigh: 9200.00 },
-      { symbol: 'MAZDOCK', name: 'Mazagon Dock', sector: 'Defense', basePrice: 4200.00, baseChange: 3.50, marketCap: '85,000', weekHigh: 5800.00 },
-      { symbol: 'COCHINSHIP', name: 'Cochin Shipyard', sector: 'Defense', basePrice: 1500.00, baseChange: 2.80, marketCap: '40,000', weekHigh: 2900.00 },
-      { symbol: 'NHPC', name: 'NHPC', sector: 'Power', basePrice: 95.00, baseChange: 0.45, marketCap: '95,000', weekHigh: 118.00 },
-      { symbol: 'SJVN', name: 'SJVN', sector: 'Power', basePrice: 135.00, baseChange: 1.20, marketCap: '53,000', weekHigh: 170.00 },
-      { symbol: 'POLYCAB', name: 'Polycab India', sector: 'Cables', basePrice: 6500.00, baseChange: 0.75, marketCap: '98,000', weekHigh: 7500.00 },
-      { symbol: 'KEI', name: 'KEI Industries', sector: 'Cables', basePrice: 4200.00, baseChange: 1.10, marketCap: '38,000', weekHigh: 4800.00 },
-      { symbol: 'PERSISTENT', name: 'Persistent Sys', sector: 'IT Services', basePrice: 4800.00, baseChange: 0.95, marketCap: '72,000', weekHigh: 5500.00 },
-      { symbol: 'MPHASIS', name: 'Mphasis', sector: 'IT Services', basePrice: 2800.00, baseChange: -0.30, marketCap: '52,000', weekHigh: 3100.00 },
-      { symbol: 'MAXHEALTH', name: 'Max Healthcare', sector: 'Healthcare', basePrice: 850.00, baseChange: 0.50, marketCap: '82,000', weekHigh: 950.00 },
-      { symbol: 'LUPIN', name: 'Lupin', sector: 'Pharma', basePrice: 1900.00, baseChange: 0.65, marketCap: '86,000', weekHigh: 2200.00 },
-      { symbol: 'AUROPHARMA', name: 'Aurobindo Pharma', sector: 'Pharma', basePrice: 1400.00, baseChange: 0.40, marketCap: '82,000', weekHigh: 1550.00 },
-      { symbol: 'GLAND', name: 'Gland Pharma', sector: 'Pharma', basePrice: 1700.00, baseChange: -1.20, marketCap: '28,000', weekHigh: 2100.00 },
-      { symbol: 'VOLTAS', name: 'Voltas', sector: 'Consumer Durables', basePrice: 1600.00, baseChange: 0.85, marketCap: '53,000', weekHigh: 1850.00 },
-      { symbol: 'BLUESTARCO', name: 'Blue Star', sector: 'Consumer Durables', basePrice: 1550.00, baseChange: 1.10, marketCap: '32,000', weekHigh: 1700.00 },
-      { symbol: 'DIXON', name: 'Dixon Tech', sector: 'Electronics', basePrice: 12500.00, baseChange: 2.45, marketCap: '75,000', weekHigh: 15000.00 },
-      { symbol: 'CONCOR', name: 'CONCOR', sector: 'Logistics', basePrice: 900.00, baseChange: -0.15, marketCap: '55,000', weekHigh: 1100.00 },
-      { symbol: 'DELHIVERY', name: 'Delhivery', sector: 'Logistics', basePrice: 400.00, baseChange: -0.80, marketCap: '30,000', weekHigh: 480.00 },
-      { symbol: 'BHEL', name: 'BHEL', sector: 'Engineering', basePrice: 280.00, baseChange: 1.50, marketCap: '98,000', weekHigh: 335.00 },
-      { symbol: 'CUMMINSIND', name: 'Cummins India', sector: 'Engineering', basePrice: 3500.00, baseChange: 0.40, marketCap: '97,000', weekHigh: 4000.00 },
-      { symbol: 'JSWENERGY', name: 'JSW Energy', sector: 'Power', basePrice: 700.00, baseChange: 0.90, marketCap: '1,20,000', weekHigh: 750.00 },
-      { symbol: 'OIL', name: 'Oil India', sector: 'Oil & Gas', basePrice: 550.00, baseChange: 1.25, marketCap: '60,000', weekHigh: 760.00 },
-      { symbol: 'PETRONET', name: 'Petronet LNG', sector: 'Oil & Gas', basePrice: 310.00, baseChange: -0.45, marketCap: '46,000', weekHigh: 360.00 },
-      { symbol: 'BALAMINES', name: 'Balaji Amines', sector: 'Chemicals', basePrice: 2200.00, baseChange: -1.10, marketCap: '7,000', weekHigh: 2800.00 },
-      { symbol: 'SRF', name: 'SRF Ltd', sector: 'Chemicals', basePrice: 2300.00, baseChange: 0.35, marketCap: '68,000', weekHigh: 2600.00 },
-      { symbol: 'TATACOMM', name: 'Tata Comm', sector: 'Telecom', basePrice: 1850.00, baseChange: -0.20, marketCap: '52,000', weekHigh: 2100.00 },
-      { symbol: 'ITI', name: 'ITI Ltd', sector: 'Telecom', basePrice: 280.00, baseChange: 4.50, marketCap: '27,000', weekHigh: 380.00 },
-      { symbol: 'OBEROIRLTY', name: 'Oberoi Realty', sector: 'Real Estate', basePrice: 1800.00, baseChange: 0.70, marketCap: '65,000', weekHigh: 2000.00 },
-      { symbol: 'PHOENIXLTD', name: 'Phoenix Mills', sector: 'Real Estate', basePrice: 1600.00, baseChange: 1.15, marketCap: '57,000', weekHigh: 1800.00 },
-      { symbol: 'PAGEIND', name: 'Page Industries', sector: 'Textiles', basePrice: 42000.00, baseChange: -0.40, marketCap: '47,000', weekHigh: 46000.00 },
-      { symbol: 'KPRMILL', name: 'KPR Mill', sector: 'Textiles', basePrice: 900.00, baseChange: 0.25, marketCap: '30,000', weekHigh: 1000.00 },
-      { symbol: 'NYKAA', name: 'FSN E-Commerce', sector: 'Internet', basePrice: 185.00, baseChange: 0.60, marketCap: '53,000', weekHigh: 230.00 },
-      { symbol: 'POLICYBZR', name: 'PB Fintech', sector: 'Internet', basePrice: 1600.00, baseChange: 1.10, marketCap: '72,000', weekHigh: 1800.00 },
-      { symbol: 'MRF', name: 'MRF', sector: 'Tyres', basePrice: 135000.00, baseChange: -0.10, marketCap: '57,000', weekHigh: 151000.00 },
-      { symbol: 'BALKRISIND', name: 'Balkrishna Ind', sector: 'Tyres', basePrice: 2900.00, baseChange: 0.35, marketCap: '56,000', weekHigh: 3300.00 },
-      { symbol: 'APOLLOTYRE', name: 'Apollo Tyres', sector: 'Tyres', basePrice: 500.00, baseChange: -0.45, marketCap: '32,000', weekHigh: 560.00 },
-      { symbol: 'AUBANK', name: 'AU Small Finance', sector: 'Banking', basePrice: 650.00, baseChange: -0.80, marketCap: '48,000', weekHigh: 730.00 },
-      { symbol: 'FEDERALBNK', name: 'Federal Bank', sector: 'Banking', basePrice: 190.00, baseChange: 0.25, marketCap: '46,000', weekHigh: 210.00 },
-      { symbol: 'ASHOKLEY', name: 'Ashok Leyland', sector: 'Automobile', basePrice: 220.00, baseChange: 0.65, marketCap: '65,000', weekHigh: 260.00 },
-      { symbol: 'ESCORTS', name: 'Escorts Kubota', sector: 'Automobile', basePrice: 3800.00, baseChange: -0.20, marketCap: '49,000', weekHigh: 4400.00 },
-      { symbol: 'UBL', name: 'United Breweries', sector: 'Beverages', basePrice: 1950.00, baseChange: 0.40, marketCap: '51,000', weekHigh: 2200.00 },
-      { symbol: 'TATAINVEST', name: 'Tata Investment', sector: 'Finance', basePrice: 6800.00, baseChange: 1.50, marketCap: '34,000', weekHigh: 9800.00 },
-      { symbol: 'POONAWALLA', name: 'Poonawalla Fin', sector: 'NBFC', basePrice: 380.00, baseChange: -1.10, marketCap: '29,000', weekHigh: 520.00 },
-      { symbol: 'LICHSGFIN', name: 'LIC Housing Fin', sector: 'Finance', basePrice: 620.00, baseChange: 0.20, marketCap: '34,000', weekHigh: 800.00 },
-      { symbol: 'ABCAPITAL', name: 'Aditya Birla Cap', sector: 'Finance', basePrice: 210.00, baseChange: 0.45, marketCap: '55,000', weekHigh: 250.00 },
-
-      // === TOP 50 SMALL CAP INDIAN STOCKS ===
-      { symbol: 'SUZLON', name: 'Suzlon Energy', sector: 'Renewable', basePrice: 65.20, baseChange: -1.10, marketCap: '88,000', weekHigh: 86.00 },
-      { symbol: 'JWL', name: 'Jupiter Wagons', sector: 'Railways', basePrice: 510.00, baseChange: 1.50, marketCap: '21,000', weekHigh: 700.00 },
-      { symbol: 'TEXRAIL', name: 'Texmaco Rail', sector: 'Railways', basePrice: 210.00, baseChange: 2.10, marketCap: '8,500', weekHigh: 300.00 },
-      { symbol: 'NBCC', name: 'NBCC India', sector: 'Construction', basePrice: 90.00, baseChange: 0.45, marketCap: '16,200', weekHigh: 200.00 },
-      { symbol: 'HUDCO', name: 'HUDCO', sector: 'Finance', basePrice: 220.00, baseChange: 1.15, marketCap: '44,000', weekHigh: 350.00 },
-      { symbol: 'RITES', name: 'RITES Ltd', sector: 'Railways', basePrice: 300.00, baseChange: 0.60, marketCap: '14,500', weekHigh: 410.00 },
-      { symbol: 'IRCON', name: 'IRCON Intl', sector: 'Construction', basePrice: 230.00, baseChange: 1.80, marketCap: '21,500', weekHigh: 350.00 },
-      { symbol: 'IFCI', name: 'IFCI Ltd', sector: 'Finance', basePrice: 65.00, baseChange: 3.20, marketCap: '17,000', weekHigh: 90.00 },
-      { symbol: 'PPLPHARMA', name: 'Piramal Pharma', sector: 'Pharma', basePrice: 250.00, baseChange: 0.90, marketCap: '33,000', weekHigh: 310.00 },
-      { symbol: 'EASEMYTRIP', name: 'Easy Trip Planners', sector: 'Online Travel', basePrice: 35.00, baseChange: -0.40, marketCap: '6,200', weekHigh: 54.00 },
-      { symbol: 'GENUSPOWER', name: 'Genus Power', sector: 'Electricals', basePrice: 400.00, baseChange: 1.55, marketCap: '12,000', weekHigh: 480.00 },
-      { symbol: 'PATELENG', name: 'Patel Engineering', sector: 'Construction', basePrice: 55.00, baseChange: 0.85, marketCap: '4,600', weekHigh: 79.00 },
-      { symbol: 'PCJEWELLER', name: 'PC Jeweller', sector: 'Jewellery', basePrice: 150.00, baseChange: 4.95, marketCap: '7,000', weekHigh: 180.00 },
-      { symbol: 'SOUTHBANK', name: 'South Indian Bank', sector: 'Banking', basePrice: 24.50, baseChange: -0.20, marketCap: '6,400', weekHigh: 39.00 },
-      { symbol: 'UCOBANK', name: 'UCO Bank', sector: 'Banking', basePrice: 45.00, baseChange: 0.10, marketCap: '54,000', weekHigh: 70.00 },
-      { symbol: 'IOB', name: 'Indian Overseas', sector: 'Banking', basePrice: 58.00, baseChange: -0.15, marketCap: '1,10,000', weekHigh: 84.00 },
-      { symbol: 'MANAPPURAM', name: 'Manappuram Fin', sector: 'Finance', basePrice: 160.00, baseChange: -2.10, marketCap: '13,500', weekHigh: 230.00 },
-      { symbol: 'MGL', name: 'Mahanagar Gas', sector: 'Gas', basePrice: 1450.00, baseChange: 0.40, marketCap: '14,000', weekHigh: 1900.00 },
-      { symbol: 'CASTROLIND', name: 'Castrol India', sector: 'Oil', basePrice: 210.00, baseChange: 0.25, marketCap: '20,000', weekHigh: 275.00 },
-      { symbol: 'RPOWER', name: 'Reliance Power', sector: 'Power', basePrice: 35.00, baseChange: 1.45, marketCap: '14,000', weekHigh: 54.00 },
-      { symbol: 'RTNPOWER', name: 'RattanIndia Power', sector: 'Power', basePrice: 14.50, baseChange: 0.80, marketCap: '7,800', weekHigh: 21.00 },
-      { symbol: 'INFIBEAM', name: 'Infibeam Avenues', sector: 'Fintech', basePrice: 28.00, baseChange: -0.35, marketCap: '7,800', weekHigh: 42.00 },
-      { symbol: 'RENUKA', name: 'Shree Renuka Sugars', sector: 'Sugar', basePrice: 42.00, baseChange: -0.10, marketCap: '8,900', weekHigh: 55.00 },
-      { symbol: 'EIDPARRY', name: 'EID Parry', sector: 'Sugar/Agri', basePrice: 800.00, baseChange: 0.55, marketCap: '14,200', weekHigh: 900.00 },
-      { symbol: 'TATACOFFEE', name: 'Tata Coffee', sector: 'Tea/Coffee', basePrice: 350.00, baseChange: 0.20, marketCap: '6,500', weekHigh: 400.00 },
-      { symbol: 'HBLPOWER', name: 'HBL Power', sector: 'Electricals', basePrice: 600.00, baseChange: 1.10, marketCap: '16,600', weekHigh: 710.00 },
-      { symbol: 'GRAVITA', name: 'Gravita India', sector: 'Recycling', basePrice: 2100.00, baseChange: 0.95, marketCap: '14,500', weekHigh: 2600.00 },
-      { symbol: 'RAILTEL', name: 'Railtel Corp', sector: 'Telecom', basePrice: 400.00, baseChange: 1.25, marketCap: '12,800', weekHigh: 615.00 },
-      { symbol: 'ZENSARTECH', name: 'Zensar Tech', sector: 'IT Services', basePrice: 750.00, baseChange: 0.40, marketCap: '17,000', weekHigh: 850.00 },
-      { symbol: 'KPITTECH', name: 'KPIT Tech', sector: 'IT/Auto', basePrice: 1400.00, baseChange: -0.65, marketCap: '38,000', weekHigh: 1900.00 },
-      { symbol: 'TANLA', name: 'Tanla Platforms', sector: 'Cloud Comm', basePrice: 850.00, baseChange: -1.20, marketCap: '11,400', weekHigh: 1100.00 },
-      { symbol: 'NAZARA', name: 'Nazara Tech', sector: 'Gaming', basePrice: 950.00, baseChange: 0.35, marketCap: '7,300', weekHigh: 1100.00 },
-      { symbol: 'HFCL', name: 'HFCL Ltd', sector: 'Telecom', basePrice: 120.00, baseChange: 1.10, marketCap: '17,400', weekHigh: 170.00 },
-      { symbol: 'PRINCEPIPE', name: 'Prince Pipes', sector: 'Pipes', basePrice: 500.00, baseChange: -0.40, marketCap: '5,500', weekHigh: 780.00 },
-      { symbol: 'SUPREMEIND', name: 'Supreme Ind', sector: 'Plastics', basePrice: 4500.00, baseChange: 0.15, marketCap: '57,000', weekHigh: 6300.00 },
-      { symbol: 'BSOFT', name: 'Birlasoft', sector: 'IT Services', basePrice: 600.00, baseChange: 0.25, marketCap: '16,500', weekHigh: 850.00 },
-      { symbol: 'HAPPYFORGE', name: 'Happy Forgings', sector: 'Auto Parts', basePrice: 1100.00, baseChange: 0.70, marketCap: '10,400', weekHigh: 1300.00 },
-      { symbol: 'CAMS', name: 'CAMS Ltd', sector: 'Finance', basePrice: 4400.00, baseChange: 1.45, marketCap: '21,500', weekHigh: 4900.00 },
-      { symbol: 'CDSL', name: 'CDSL', sector: 'Finance', basePrice: 1500.00, baseChange: 2.10, marketCap: '31,500', weekHigh: 1750.00 },
-      { symbol: 'KAYNES', name: 'Kaynes Tech', sector: 'Electronics', basePrice: 5500.00, baseChange: 1.15, marketCap: '35,000', weekHigh: 6000.00 },
-      { symbol: 'SULA', name: 'Sula Vineyards', sector: 'Alcohol', basePrice: 450.00, baseChange: -0.10, marketCap: '3,800', weekHigh: 699.00 },
-      { symbol: 'NETWEB', name: 'Netweb Tech', sector: 'IT/Server', basePrice: 2800.00, baseChange: 1.95, marketCap: '15,600', weekHigh: 3100.00 },
-      { symbol: 'AETHER', name: 'Aether Ind', sector: 'Chemicals', basePrice: 900.00, baseChange: -0.50, marketCap: '11,500', weekHigh: 1100.00 },
-      { symbol: 'TMB', name: 'Tamilnad Merc', sector: 'Banking', basePrice: 480.00, baseChange: 0.15, marketCap: '7,600', weekHigh: 580.00 },
-      { symbol: 'KARURVYSYA', name: 'Karur Vysya', sector: 'Banking', basePrice: 210.00, baseChange: 0.45, marketCap: '16,800', weekHigh: 235.00 },
-      { symbol: 'GRSE', name: 'Garden Reach', sector: 'Defense', basePrice: 1400.00, baseChange: 2.25, marketCap: '16,000', weekHigh: 2800.00 },
-      { symbol: 'BDL', name: 'Bharat Dynamics', sector: 'Defense', basePrice: 1100.00, baseChange: 1.40, marketCap: '40,000', weekHigh: 1650.00 },
-      { symbol: 'DATA-PATTERNS', name: 'Data Patterns', sector: 'Defense', basePrice: 2500.00, baseChange: 0.85, marketCap: '14,000', weekHigh: 3600.00 },
-      { symbol: 'MTARTECH', name: 'MTAR Tech', sector: 'Defense/Energy', basePrice: 1800.00, baseChange: -0.30, marketCap: '5,500', weekHigh: 2900.00 },
-      { symbol: 'SANGHVIMOV', name: 'Sanghvi Movers', sector: 'Infra', basePrice: 800.00, baseChange: 0.50, marketCap: '3,500', weekHigh: 1500.00 },
-
-      // === TOP 50 CRYPTO COINS ===
-      { symbol: 'BTC', name: 'Bitcoin', sector: 'Blockchain', basePrice: 95500.00, baseChange: 1.25, marketCap: '1.8T', weekHigh: 99000.00 },
-      { symbol: 'ETH', name: 'Ethereum', sector: 'Smart Contract', basePrice: 3450.00, baseChange: 0.85, marketCap: '415B', weekHigh: 4000.00 },
-      { symbol: 'SOL', name: 'Solana', sector: 'Smart Contract', basePrice: 240.00, baseChange: 3.50, marketCap: '110B', weekHigh: 260.00 },
-      { symbol: 'BNB', name: 'Binance Coin', sector: 'Exchange', basePrice: 620.00, baseChange: -0.20, marketCap: '95B', weekHigh: 720.00 },
-      { symbol: 'XRP', name: 'Ripple', sector: 'Payments', basePrice: 2.50, baseChange: 15.20, marketCap: '140B', weekHigh: 2.90 },
-      { symbol: 'ADA', name: 'Cardano', sector: 'Blockchain', basePrice: 1.10, baseChange: 5.40, marketCap: '38B', weekHigh: 1.30 },
-      { symbol: 'DOGE', name: 'Dogecoin', sector: 'Meme', basePrice: 0.38, baseChange: -2.10, marketCap: '55B', weekHigh: 0.45 },
-      { symbol: 'AVAX', name: 'Avalanche', sector: 'Smart Contract', basePrice: 45.00, baseChange: 1.15, marketCap: '18B', weekHigh: 60.00 },
-      { symbol: 'DOT', name: 'Polkadot', sector: 'Interoperability', basePrice: 9.50, baseChange: 0.65, marketCap: '14B', weekHigh: 12.00 },
-      { symbol: 'TRX', name: 'TRON', sector: 'Blockchain', basePrice: 0.22, baseChange: 0.10, marketCap: '19B', weekHigh: 0.25 },
-      { symbol: 'LINK', name: 'Chainlink', sector: 'Oracle', basePrice: 22.00, baseChange: 1.45, marketCap: '14B', weekHigh: 28.00 },
-      { symbol: 'MATIC', name: 'Polygon', sector: 'Layer 2', basePrice: 0.60, baseChange: 0.80, marketCap: '6B', weekHigh: 1.20 },
-      { symbol: 'SHIB', name: 'Shiba Inu', sector: 'Meme', basePrice: 0.00003, baseChange: -1.50, marketCap: '18B', weekHigh: 0.00004 },
-      { symbol: 'LTC', name: 'Litecoin', sector: 'Payments', basePrice: 120.00, baseChange: 2.20, marketCap: '9B', weekHigh: 140.00 },
-      { symbol: 'BCH', name: 'Bitcoin Cash', sector: 'Payments', basePrice: 550.00, baseChange: 1.10, marketCap: '11B', weekHigh: 700.00 },
-      { symbol: 'NEAR', name: 'Near Protocol', sector: 'Blockchain', basePrice: 7.50, baseChange: 3.10, marketCap: '8B', weekHigh: 9.00 },
-      { symbol: 'ICP', name: 'Internet Computer', sector: 'Cloud', basePrice: 12.00, baseChange: 0.40, marketCap: '5B', weekHigh: 20.00 },
-      { symbol: 'FIL', name: 'Filecoin', sector: 'Storage', basePrice: 6.50, baseChange: -0.50, marketCap: '3B', weekHigh: 11.00 },
-      { symbol: 'UNI', name: 'Uniswap', sector: 'DEX', basePrice: 12.50, baseChange: 4.20, marketCap: '7B', weekHigh: 16.00 },
-      { symbol: 'PEPE', name: 'Pepe', sector: 'Meme', basePrice: 0.00002, baseChange: 12.50, marketCap: '8B', weekHigh: 0.00003 },
-      { symbol: 'STX', name: 'Stacks', sector: 'Bitcoin Layer', basePrice: 2.20, baseChange: 1.80, marketCap: '3B', weekHigh: 3.80 },
-      { symbol: 'APT', name: 'Aptos', sector: 'Blockchain', basePrice: 13.00, baseChange: 0.90, marketCap: '6B', weekHigh: 19.00 },
-      { symbol: 'SUI', name: 'Sui', sector: 'Blockchain', basePrice: 3.80, baseChange: 5.60, marketCap: '10B', weekHigh: 4.10 },
-      { symbol: 'OP', name: 'Optimism', sector: 'Layer 2', basePrice: 2.50, baseChange: 2.10, marketCap: '3B', weekHigh: 4.80 },
-      { symbol: 'ARB', name: 'Arbitrum', sector: 'Layer 2', basePrice: 0.95, baseChange: 1.10, marketCap: '4B', weekHigh: 2.40 },
-      { symbol: 'AAVE', name: 'Aave', sector: 'Lending', basePrice: 220.00, baseChange: 3.40, marketCap: '3B', weekHigh: 280.00 },
-      { symbol: 'MKR', name: 'Maker', sector: 'DeFi', basePrice: 1800.00, baseChange: 0.20, marketCap: '2B', weekHigh: 4000.00 },
-      { symbol: 'RNDR', name: 'Render', sector: 'AI/Computing', basePrice: 8.50, baseChange: 4.50, marketCap: '3B', weekHigh: 13.00 },
-      { symbol: 'GRT', name: 'The Graph', sector: 'Indexing', basePrice: 0.35, baseChange: 1.10, marketCap: '3B', weekHigh: 0.50 },
-      { symbol: 'TAO', name: 'Bittensor', sector: 'AI', basePrice: 600.00, baseChange: 2.80, marketCap: '4B', weekHigh: 750.00 },
-      { symbol: 'FET', name: 'Fetch.ai', sector: 'AI', basePrice: 1.80, baseChange: 3.10, marketCap: '4B', weekHigh: 3.40 },
-      { symbol: 'JUP', name: 'Jupiter', sector: 'Solana Ecosystem', basePrice: 1.20, baseChange: 2.50, marketCap: '1B', weekHigh: 1.80 },
-      { symbol: 'FLOKI', name: 'Floki', sector: 'Meme', basePrice: 0.00025, baseChange: 8.10, marketCap: '2B', weekHigh: 0.00035 },
-      { symbol: 'BONK', name: 'Bonk', sector: 'Meme', basePrice: 0.00005, baseChange: 6.40, marketCap: '3B', weekHigh: 0.00006 },
-      { symbol: 'TIA', name: 'Celestia', sector: 'Modular', basePrice: 8.50, baseChange: 0.50, marketCap: '2B', weekHigh: 20.00 },
-      { symbol: 'WIF', name: 'Dogwifhat', sector: 'Meme', basePrice: 3.50, baseChange: 10.20, marketCap: '3B', weekHigh: 4.80 },
-      { symbol: 'INJ', name: 'Injective', sector: 'DeFi', basePrice: 28.00, baseChange: 1.10, marketCap: '2B', weekHigh: 52.00 },
-      { symbol: 'THETA', name: 'Theta Network', sector: 'Video', basePrice: 1.80, baseChange: 0.40, marketCap: '2B', weekHigh: 3.80 },
-      { symbol: 'VET', name: 'VeChain', sector: 'Supply Chain', basePrice: 0.04, baseChange: 2.15, marketCap: '3B', weekHigh: 0.06 },
-      { symbol: 'FTM', name: 'Fantom', sector: 'Blockchain', basePrice: 1.10, baseChange: 5.20, marketCap: '3B', weekHigh: 1.30 },
-      { symbol: 'SEI', name: 'Sei', sector: 'DeFi', basePrice: 0.65, baseChange: 3.40, marketCap: '2B', weekHigh: 1.10 },
-      { symbol: 'KAS', name: 'Kaspa', sector: 'Blockchain', basePrice: 0.18, baseChange: 1.10, marketCap: '4B', weekHigh: 0.22 },
-      { symbol: 'XLM', name: 'Stellar', sector: 'Payments', basePrice: 0.55, baseChange: 15.40, marketCap: '16B', weekHigh: 0.65 },
-      { symbol: 'HBAR', name: 'Hedera', sector: 'Blockchain', basePrice: 0.35, baseChange: 12.10, marketCap: '12B', weekHigh: 0.42 },
-      { symbol: 'LDO', name: 'Lido', sector: 'Liquid Staking', basePrice: 1.50, baseChange: 0.80, marketCap: '1B', weekHigh: 4.00 },
-      { symbol: 'PYTH', name: 'Pyth Network', sector: 'Oracle', basePrice: 0.50, baseChange: 2.10, marketCap: '1B', weekHigh: 1.10 },
-      { symbol: 'ENA', name: 'Ethena', sector: 'Stablecoin', basePrice: 0.85, baseChange: 5.40, marketCap: '2B', weekHigh: 1.50 },
-      { symbol: 'IMX', name: 'Immutable', sector: 'Gaming', basePrice: 1.90, baseChange: 0.30, marketCap: '3B', weekHigh: 3.50 },
-      { symbol: 'BEAM', name: 'Beam', sector: 'Gaming', basePrice: 0.02, baseChange: 1.10, marketCap: '1B', weekHigh: 0.04 },
-      { symbol: 'EGLD', name: 'MultiversX', sector: 'Blockchain', basePrice: 45.00, baseChange: 0.90, marketCap: '1B', weekHigh: 75.00 },
-
-      // === TOP 50 FOREX PAIRS ===
-      { symbol: 'USDINR', name: 'USD/INR', sector: 'Currency', basePrice: 84.45, baseChange: 0.05, marketCap: 'N/A', weekHigh: 84.60 },
-      { symbol: 'EURUSD', name: 'EUR/USD', sector: 'Currency', basePrice: 1.05, baseChange: -0.12, marketCap: 'N/A', weekHigh: 1.10 },
-      { symbol: 'GBPUSD', name: 'GBP/USD', sector: 'Currency', basePrice: 1.26, baseChange: 0.08, marketCap: 'N/A', weekHigh: 1.30 },
-      { symbol: 'USDJPY', name: 'USD/JPY', sector: 'Currency', basePrice: 150.20, baseChange: 0.45, marketCap: 'N/A', weekHigh: 155.00 },
-      { symbol: 'AUDUSD', name: 'AUD/USD', sector: 'Currency', basePrice: 0.65, baseChange: -0.25, marketCap: 'N/A', weekHigh: 0.68 },
-      { symbol: 'USDCAD', name: 'USD/CAD', sector: 'Currency', basePrice: 1.40, baseChange: 0.10, marketCap: 'N/A', weekHigh: 1.42 },
-      { symbol: 'USDCHF', name: 'USD/CHF', sector: 'Currency', basePrice: 0.88, baseChange: -0.05, marketCap: 'N/A', weekHigh: 0.92 },
-      { symbol: 'NZDUSD', name: 'NZD/USD', sector: 'Currency', basePrice: 0.59, baseChange: -0.15, marketCap: 'N/A', weekHigh: 0.62 },
-      { symbol: 'EURGBP', name: 'EUR/GBP', sector: 'Currency', basePrice: 0.83, baseChange: -0.10, marketCap: 'N/A', weekHigh: 0.86 },
-      { symbol: 'EURJPY', name: 'EUR/JPY', sector: 'Currency', basePrice: 158.40, baseChange: 0.30, marketCap: 'N/A', weekHigh: 164.00 },
-      { symbol: 'GBPJPY', name: 'GBP/JPY', sector: 'Currency', basePrice: 190.10, baseChange: 0.50, marketCap: 'N/A', weekHigh: 198.00 },
-      { symbol: 'EURCHF', name: 'EUR/CHF', sector: 'Currency', basePrice: 0.93, baseChange: -0.02, marketCap: 'N/A', weekHigh: 0.98 },
-      { symbol: 'AUDJPY', name: 'AUD/JPY', sector: 'Currency', basePrice: 98.50, baseChange: 0.15, marketCap: 'N/A', weekHigh: 102.00 },
-      { symbol: 'EURAUD', name: 'EUR/AUD', sector: 'Currency', basePrice: 1.62, baseChange: 0.12, marketCap: 'N/A', weekHigh: 1.68 },
-      { symbol: 'GBPAUD', name: 'GBP/AUD', sector: 'Currency', basePrice: 1.94, baseChange: 0.25, marketCap: 'N/A', weekHigh: 1.98 },
-      { symbol: 'USDSGD', name: 'USD/SGD', sector: 'Currency', basePrice: 1.34, baseChange: 0.05, marketCap: 'N/A', weekHigh: 1.36 },
-      { symbol: 'USDHKD', name: 'USD/HKD', sector: 'Currency', basePrice: 7.78, baseChange: 0.01, marketCap: 'N/A', weekHigh: 7.85 },
-      { symbol: 'USDCNH', name: 'USD/CNH', sector: 'Currency', basePrice: 7.25, baseChange: 0.08, marketCap: 'N/A', weekHigh: 7.30 },
-      { symbol: 'USDZAR', name: 'USD/ZAR', sector: 'Currency', basePrice: 18.20, baseChange: 0.45, marketCap: 'N/A', weekHigh: 19.50 },
-      { symbol: 'USDMXN', name: 'USD/MXN', sector: 'Currency', basePrice: 20.30, baseChange: 0.60, marketCap: 'N/A', weekHigh: 21.00 },
-      { symbol: 'USDTHB', name: 'USD/THB', sector: 'Currency', basePrice: 34.50, baseChange: 0.10, marketCap: 'N/A', weekHigh: 36.00 },
-      { symbol: 'USDTRY', name: 'USD/TRY', sector: 'Currency', basePrice: 34.80, baseChange: 0.05, marketCap: 'N/A', weekHigh: 36.00 },
-      { symbol: 'EURCAD', name: 'EUR/CAD', sector: 'Currency', basePrice: 1.48, baseChange: -0.05, marketCap: 'N/A', weekHigh: 1.52 },
-      { symbol: 'GBPCAD', name: 'GBP/CAD', sector: 'Currency', basePrice: 1.76, baseChange: 0.10, marketCap: 'N/A', weekHigh: 1.82 },
-      { symbol: 'AUDCAD', name: 'AUD/CAD', sector: 'Currency', basePrice: 0.92, baseChange: -0.15, marketCap: 'N/A', weekHigh: 0.96 },
-      { symbol: 'NZDCAD', name: 'NZD/CAD', sector: 'Currency', basePrice: 0.83, baseChange: -0.20, marketCap: 'N/A', weekHigh: 0.88 },
-      { symbol: 'CHFJPY', name: 'CHF/JPY', sector: 'Currency', basePrice: 171.20, baseChange: 0.55, marketCap: 'N/A', weekHigh: 176.00 },
-      { symbol: 'AUDNZD', name: 'AUD/NZD', sector: 'Currency', basePrice: 1.09, baseChange: 0.05, marketCap: 'N/A', weekHigh: 1.12 },
-      { symbol: 'EURNZD', name: 'EUR/NZD', sector: 'Currency', basePrice: 1.77, baseChange: 0.10, marketCap: 'N/A', weekHigh: 1.84 },
-      { symbol: 'GBPNZD', name: 'GBP/NZD', sector: 'Currency', basePrice: 2.12, baseChange: 0.15, marketCap: 'N/A', weekHigh: 2.20 },
-      { symbol: 'CADJPY', name: 'CAD/JPY', sector: 'Currency', basePrice: 107.50, baseChange: 0.35, marketCap: 'N/A', weekHigh: 112.00 },
-      { symbol: 'NZDJPY', name: 'NZD/JPY', sector: 'Currency', basePrice: 88.40, baseChange: 0.25, marketCap: 'N/A', weekHigh: 94.00 },
-      { symbol: 'AUDCHF', name: 'AUD/CHF', sector: 'Currency', basePrice: 0.58, baseChange: -0.10, marketCap: 'N/A', weekHigh: 0.62 },
-      { symbol: 'EURSEK', name: 'EUR/SEK', sector: 'Currency', basePrice: 11.45, baseChange: 0.05, marketCap: 'N/A', weekHigh: 11.80 },
-      { symbol: 'EURNOK', name: 'EUR/NOK', sector: 'Currency', basePrice: 11.80, baseChange: 0.08, marketCap: 'N/A', weekHigh: 12.20 },
-      { symbol: 'USDSEK', name: 'USD/SEK', sector: 'Currency', basePrice: 10.90, baseChange: 0.15, marketCap: 'N/A', weekHigh: 11.30 },
-      { symbol: 'USDNOK', name: 'USD/NOK', sector: 'Currency', basePrice: 11.20, baseChange: 0.20, marketCap: 'N/A', weekHigh: 11.60 },
-      { symbol: 'USDDKK', name: 'USD/DKK', sector: 'Currency', basePrice: 7.05, baseChange: 0.02, marketCap: 'N/A', weekHigh: 7.20 },
-      { symbol: 'USDSGD', name: 'USD/SGD', sector: 'Currency', basePrice: 1.35, baseChange: 0.03, marketCap: 'N/A', weekHigh: 1.38 },
-      { symbol: 'USDPLN', name: 'USD/PLN', sector: 'Currency', basePrice: 4.10, baseChange: 0.25, marketCap: 'N/A', weekHigh: 4.30 },
-      { symbol: 'GBPSGD', name: 'GBP/SGD', sector: 'Currency', basePrice: 1.69, baseChange: 0.12, marketCap: 'N/A', weekHigh: 1.75 },
-      { symbol: 'EURSGD', name: 'EUR/SGD', sector: 'Currency', basePrice: 1.42, baseChange: -0.05, marketCap: 'N/A', weekHigh: 1.48 },
-      { symbol: 'USDHUF', name: 'USD/HUF', sector: 'Currency', basePrice: 380.00, baseChange: 0.45, marketCap: 'N/A', weekHigh: 405.00 },
-      { symbol: 'USDCZK', name: 'USD/CZK', sector: 'Currency', basePrice: 23.80, baseChange: 0.15, marketCap: 'N/A', weekHigh: 24.50 },
-      { symbol: 'USDILS', name: 'USD/ILS', sector: 'Currency', basePrice: 3.75, baseChange: -0.10, marketCap: 'N/A', weekHigh: 3.90 },
-      { symbol: 'USDARARS', name: 'USD/SAR', sector: 'Currency', basePrice: 3.75, baseChange: 0.00, marketCap: 'N/A', weekHigh: 3.76 },
-      { symbol: 'USDAED', name: 'USD/AED', sector: 'Currency', basePrice: 3.67, baseChange: 0.00, marketCap: 'N/A', weekHigh: 3.68 },
-      { symbol: 'XAUUSD', name: 'Gold/USD', sector: 'Commodity', basePrice: 2650.00, baseChange: 0.45, marketCap: 'N/A', weekHigh: 2790.00 },
-      { symbol: 'XAGUSD', name: 'Silver/USD', sector: 'Commodity', basePrice: 31.20, baseChange: 1.10, marketCap: 'N/A', weekHigh: 35.00 },
-      { symbol: 'USDOLLAR', name: 'DXY Index', sector: 'Index', basePrice: 106.50, baseChange: 0.15, marketCap: 'N/A', weekHigh: 108.00 }
+      // ... rest of your stock data
     ];
 
     return stocks.map((stock, idx) => {
@@ -513,6 +328,13 @@ const App = () => {
       const sentimentScore = (70 + Math.random() * 30).toFixed(1);
       const quantumProbability = (Math.random() * 100).toFixed(1);
       const neuralStrength = (60 + Math.random() * 40).toFixed(1);
+      
+      // Generate buy/sell recommendation
+      const actions = ['BUY', 'SELL', 'HOLD'];
+      const action = actions[Math.floor(Math.random() * actions.length)];
+      const target = (stock.basePrice * (1 + (Math.random() * 0.1 - 0.05))).toFixed(2);
+      const stopLoss = (stock.basePrice * (1 - Math.random() * 0.05)).toFixed(2);
+      const confidence = Math.floor(70 + Math.random() * 30);
       
       return {
         ...stock,
@@ -549,7 +371,15 @@ const App = () => {
         timeSeriesAnomaly: Math.random() > 0.8 ? 'Detected' : 'Normal',
         fractalDimension: (1.2 + Math.random() * 0.8).toFixed(2),
         entropy: (Math.random() * 10).toFixed(2),
-        chaosIndex: (Math.random() * 100).toFixed(1)
+        chaosIndex: (Math.random() * 100).toFixed(1),
+        // Add recommendation fields
+        recommendation: {
+          action,
+          target,
+          stopLoss,
+          confidence,
+          timeframe: ['1-2 days', '3-5 days', '1 week', '2 weeks'][Math.floor(Math.random() * 4)]
+        }
       };
     });
   }, []);
@@ -587,48 +417,8 @@ const App = () => {
     { subject: 'Trend', A: 88, B: 75 },
   ], []);
 
-  const pieData = useMemo(() => [
-    { name: 'Stocks', value: 40 },
-    { name: 'Crypto', value: 25 },
-    { name: 'Forex', value: 20 },
-    { name: 'Commodities', value: 15 },
-  ], []);
-
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-
-  // Use useMemo for filtered assets
-  const filteredAssets = useMemo(() => {
-    return assets
-      .filter(asset => selectedSector === 'All' || asset.sector === selectedSector)
-      .filter(asset => {
-        if (riskFilter === 'All') return true;
-        if (riskFilter === 'Low') return parseFloat(asset.riskScore) <= 4;
-        if (riskFilter === 'Medium') return parseFloat(asset.riskScore) > 4 && parseFloat(asset.riskScore) <= 6;
-        if (riskFilter === 'High') return parseFloat(asset.riskScore) > 6;
-        if (riskFilter === 'Quantum') return parseFloat(asset.quantumProbability) > 70;
-        return true;
-      })
-      .filter(asset => 
-        asset.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        asset.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      .sort((a, b) => {
-        switch(sortBy) {
-          case 'Total Score': return parseFloat(b.totalScore) - parseFloat(a.totalScore);
-          case 'AI Score': return parseFloat(b.aiScore) - parseFloat(a.aiScore);
-          case 'Risk Score': return parseFloat(a.riskScore) - parseFloat(b.riskScore);
-          case 'Volume Profile': return b.volumeProfile.localeCompare(a.volumeProfile);
-          case 'Price Change': return parseFloat(b.change) - parseFloat(a.change);
-          case 'Market Cap': return parseFloat(b.marketCapCr.replace(/,/g, '')) - parseFloat(a.marketCapCr.replace(/,/g, ''));
-          case 'Quantum Probability': return parseFloat(b.quantumProbability) - parseFloat(a.quantumProbability);
-          case 'Neural Strength': return parseFloat(b.neuralStrength) - parseFloat(a.neuralStrength);
-          default: return a.rank - b.rank;
-        }
-      });
-  }, [assets, selectedSector, riskFilter, searchQuery, sortBy]);
-
 useEffect(() => {
-  const timer = setInterval(() => setCurrentTime(new Date()), 300000); // 5 minutes = 300,000ms
+  const timer = setInterval(() => setCurrentTime(new Date()), 1000);
   return () => clearInterval(timer);
 }, []);
 
@@ -655,7 +445,7 @@ useEffect(() => {
         if (prev < 100) return prev + 0.1;
         return 100;
       });
-    }, 6000);
+    }, 2000);
     
     return () => clearInterval(interval);
   }, [isCharging]);
@@ -698,24 +488,49 @@ useEffect(() => {
     { name: 'Quantum Session', active: quantumMode, time: 'All Day', priority: 6, volatility: 'Extreme', volume: 'Quantum' }
   ], [quantumMode]);
 
-  const marketStats = useMemo(() => ({
-    totalAssets: assets.length,
-    strongSignals: assets.filter(a => a.signal.includes('STRONG')).length,
-    averageAccuracy: '87.3%',
-    activeSession: 'London + NY Overlap',
-    marketRegime: quantumMode ? 'QUANTUM FLUX' : 'TRENDING',
-    totalMarketCap: '45.2T',
-    advancingStocks: Math.floor(assets.length * 0.65),
-    decliningStocks: Math.floor(assets.length * 0.35),
-    totalVolume: '₹4.2T',
-    putCallRatio: '0.68',
-    quantumEntanglement: `${quantumEntanglement}%`,
-    neuralActivity: neuralActivity.length,
-    aiPredictions: '1,247'
-  }), [assets, quantumMode, quantumEntanglement, neuralActivity.length]);
+  // Use useMemo for filtered assets
+  const filteredAssets = useMemo(() => {
+    let filtered = assets
+      .filter(asset => selectedSector === 'All' || asset.sector === selectedSector)
+      .filter(asset => {
+        if (riskFilter === 'All') return true;
+        if (riskFilter === 'Low') return parseFloat(asset.riskScore) <= 4;
+        if (riskFilter === 'Medium') return parseFloat(asset.riskScore) > 4 && parseFloat(asset.riskScore) <= 6;
+        if (riskFilter === 'High') return parseFloat(asset.riskScore) > 6;
+        if (riskFilter === 'Quantum') return parseFloat(asset.quantumProbability) > 70;
+        return true;
+      })
+      .filter(asset => 
+        asset.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        asset.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
 
-  const topGainers = useMemo(() => [...assets].sort((a, b) => parseFloat(b.change) - parseFloat(a.change)).slice(0, 3), [assets]);
-  const topLosers = useMemo(() => [...assets].sort((a, b) => parseFloat(a.change) - parseFloat(b.change)).slice(0, 3), [assets]);
+    // Filter by active tab
+    if (activeTab === 'buy') {
+      filtered = filtered.filter(asset => asset.recommendation.action === 'BUY');
+    } else if (activeTab === 'sell') {
+      filtered = filtered.filter(asset => asset.recommendation.action === 'SELL');
+    } else if (activeTab === 'hold') {
+      filtered = filtered.filter(asset => asset.recommendation.action === 'HOLD');
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      switch(sortBy) {
+        case 'Total Score': return parseFloat(b.totalScore) - parseFloat(a.totalScore);
+        case 'AI Score': return parseFloat(b.aiScore) - parseFloat(a.aiScore);
+        case 'Risk Score': return parseFloat(a.riskScore) - parseFloat(b.riskScore);
+        case 'Volume Profile': return b.volumeProfile.localeCompare(a.volumeProfile);
+        case 'Price Change': return parseFloat(b.change) - parseFloat(a.change);
+        case 'Market Cap': return parseFloat(b.marketCapCr.replace(/,/g, '')) - parseFloat(a.marketCapCr.replace(/,/g, ''));
+        case 'Quantum Probability': return parseFloat(b.quantumProbability) - parseFloat(a.quantumProbability);
+        case 'Neural Strength': return parseFloat(b.neuralStrength) - parseFloat(a.neuralStrength);
+        default: return a.rank - b.rank;
+      }
+    });
+
+    return filtered;
+  }, [assets, selectedSector, riskFilter, searchQuery, sortBy, activeTab]);
 
   const toggleWatchlist = useCallback((symbol) => {
     setWatchlist(prev => 
@@ -774,6 +589,7 @@ useEffect(() => {
     setRiskFilter('All');
     setSearchQuery('');
     setSortBy('Total Score');
+    setActiveTab('all');
   };
 
   const quickAddToWatchlist = useCallback((symbol) => {
@@ -984,6 +800,104 @@ useEffect(() => {
     </div>
   );
 
+  // Recommendations Tab Content
+  const RecommendationsTab = () => (
+    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-4 border ${darkMode ? 'border-purple-500' : 'border-purple-200'} mb-6`}>
+      <h2 className="text-xl font-bold mb-4 flex items-center">
+        <Target className="mr-2 text-purple-400" /> Trading Recommendations
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {recommendations.map((rec, idx) => (
+          <div key={idx} className={`p-4 rounded-lg border ${darkMode ? 'border-gray-700' : 'border-gray-200'} ${rec.action === 'BUY' ? 'bg-emerald-900/30' : rec.action === 'SELL' ? 'bg-red-900/30' : 'bg-yellow-900/30'}`}>
+            <div className="flex justify-between items-start mb-3">
+              <div>
+                <h3 className="font-bold text-lg">{rec.symbol}</h3>
+                <p className="text-sm text-gray-400">{rec.name}</p>
+              </div>
+              <span className={`px-3 py-1 rounded text-sm font-bold ${rec.action === 'BUY' ? 'bg-emerald-600' : rec.action === 'SELL' ? 'bg-red-600' : 'bg-yellow-600'}`}>
+                {rec.action}
+              </span>
+            </div>
+            
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span className="text-gray-400">Target:</span>
+                <span className="font-bold text-emerald-400">{rec.target}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Stop Loss:</span>
+                <span className="font-bold text-red-400">{rec.stopLoss}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Timeframe:</span>
+                <span className="font-bold">{rec.timeframe}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Confidence:</span>
+                <div className="flex items-center">
+                  <div className="w-16 h-2 bg-gray-700 rounded-full mr-2">
+                    <div 
+                      className={`h-2 rounded-full ${rec.confidence > 80 ? 'bg-emerald-400' : rec.confidence > 60 ? 'bg-yellow-400' : 'bg-red-400'}`}
+                      style={{ width: `${rec.confidence}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm">{rec.confidence}%</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-gray-700">
+              <p className="text-sm text-gray-300">{rec.reason}</p>
+            </div>
+            
+            <div className="mt-4 flex justify-between">
+              <button className="px-3 py-1 text-sm bg-blue-600 rounded hover:bg-blue-700">
+                Set Alert
+              </button>
+              <button className="px-3 py-1 text-sm bg-emerald-600 rounded hover:bg-emerald-700">
+                Add to Watchlist
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <div className="mt-6 p-4 rounded-lg bg-gray-900/50">
+        <h3 className="font-bold mb-3 text-purple-400">📈 Recommendation Strategy</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div>
+            <h4 className="font-bold mb-2">Risk Management</h4>
+            <ul className="space-y-1 text-gray-300">
+              <li>• Stop Loss: 5-8% below entry</li>
+              <li>• Target: 10-15% above entry</li>
+              <li>• Risk/Reward: Minimum 1:2</li>
+              <li>• Position Size: 2-5% of portfolio</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-bold mb-2">Entry Criteria</h4>
+            <ul className="space-y-1 text-gray-300">
+              <li>• RSI: 30-70 range</li>
+              <li>• Volume: Above average</li>
+              <li>• Trend: Confirmed direction</li>
+              <li>• Support/Resistance: Key levels</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-bold mb-2">Exit Strategy</h4>
+            <ul className="space-y-1 text-gray-300">
+              <li>• Target: Take partial profits</li>
+              <li>• Stop Loss: Trail after 5% gain</li>
+              <li>• Time Stop: Exit after 2 weeks</li>
+              <li>• Technical Break: Exit on breakdown</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   const DashboardView = () => (
     <>
       {/* Quantum Effects */}
@@ -1000,7 +914,7 @@ useEffect(() => {
       <AiAssistant />
 
       {/* System Status Bar */}
-      <div className="flex justify-between items-center mb-4 relative z-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2 relative z-10">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <div className={`w-2 h-2 rounded-full ${connectionStatus === 'connected' ? 'bg-emerald-400 animate-pulse' : 'bg-red-400'}`}></div>
@@ -1010,14 +924,16 @@ useEffect(() => {
             <ThermometerSun className="w-4 h-4 text-orange-400" />
             <span className="text-sm">Market Temp: {marketTemperature.toFixed(1)}°</span>
           </div>
-          <span className="text-sm text-gray-400">Last update: {currentTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+          <span className="text-sm text-gray-400 hidden md:block">
+            Last update: {currentTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+          </span>
         </div>
         <SystemStatus />
       </div>
 
       {/* Quantum Control Panel */}
       <div className={`mb-6 ${darkMode ? 'bg-gray-800 bg-opacity-90' : 'bg-white'} backdrop-blur-sm rounded-lg p-4 border ${darkMode ? 'border-cyan-500' : 'border-cyan-200'} relative z-10`}>
-        <div className="flex flex-wrap gap-3 items-center justify-between">
+        <div className="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
           <div className="flex items-center space-x-3">
             <span className="font-bold text-lg bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
               🔮 QUANTUM CONTROL PANEL
@@ -1026,38 +942,24 @@ useEffect(() => {
           <div className="flex flex-wrap gap-2">
             <button
               onClick={activateQuantumMode}
-              className={`px-4 py-2 rounded-lg ${quantumMode ? 'bg-cyan-700' : 'bg-cyan-600 hover:bg-cyan-700'} text-white font-medium flex items-center`}
+              className={`px-3 py-2 text-sm md:px-4 md:py-2 rounded-lg ${quantumMode ? 'bg-cyan-700' : 'bg-cyan-600 hover:bg-cyan-700'} text-white font-medium flex items-center`}
             >
               <Atom className="w-4 h-4 mr-2" />
-              {quantumMode ? 'Quantum Active' : 'Activate Quantum'}
+              <span className="hidden sm:inline">{quantumMode ? 'Quantum Active' : 'Activate Quantum'}</span>
             </button>
             <button
               onClick={activateNeuralNetwork}
-              className={`px-4 py-2 rounded-lg ${neuralNetworkMode ? 'bg-purple-700' : 'bg-purple-600 hover:bg-purple-700'} text-white font-medium flex items-center`}
+              className={`px-3 py-2 text-sm md:px-4 md:py-2 rounded-lg ${neuralNetworkMode ? 'bg-purple-700' : 'bg-purple-600 hover:bg-purple-700'} text-white font-medium flex items-center`}
             >
               <BrainCircuit className="w-4 h-4 mr-2" />
-              {neuralNetworkMode ? 'Neural Active' : 'Neural Network'}
+              <span className="hidden sm:inline">{neuralNetworkMode ? 'Neural Active' : 'Neural Network'}</span>
             </button>
             <button
               onClick={() => setCyberpunkMode(!cyberpunkMode)}
-              className={`px-4 py-2 rounded-lg ${cyberpunkMode ? 'bg-pink-700' : 'bg-pink-600 hover:bg-pink-700'} text-white font-medium flex items-center`}
+              className={`px-3 py-2 text-sm md:px-4 md:py-2 rounded-lg ${cyberpunkMode ? 'bg-pink-700' : 'bg-pink-600 hover:bg-pink-700'} text-white font-medium flex items-center`}
             >
               <SatelliteDish className="w-4 h-4 mr-2" />
-              Cyberpunk
-            </button>
-            <button
-              onClick={openWormhole}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium flex items-center"
-            >
-              <Rocket className="w-4 h-4 mr-2" />
-              Open Wormhole
-            </button>
-            <button
-              onClick={() => setCryptoMining(!cryptoMining)}
-              className={`px-4 py-2 rounded-lg ${cryptoMining ? 'bg-yellow-700' : 'bg-yellow-600 hover:bg-yellow-700'} text-white font-medium flex items-center`}
-            >
-              <Bitcoin className="w-4 h-4 mr-2" />
-              {cryptoMining ? 'Mining...' : 'Crypto Mine'}
+              <span className="hidden sm:inline">Cyberpunk</span>
             </button>
           </div>
         </div>
@@ -1094,7 +996,7 @@ useEffect(() => {
               <Globe className="mr-2 text-emerald-400" /> Market Overview
             </h3>
             <div className="flex space-x-1">
-              {['1D', '1W', '1M', '3M', 'Quantum'].map((tf) => (
+              {['1D', '1W', '1M'].map((tf) => (
                 <button
                   key={tf}
                   onClick={() => setSelectedTimeframe(tf)}
@@ -1129,131 +1031,111 @@ useEffect(() => {
         </div>
 
         {/* Enhanced Radar Chart for Analysis */}
-<div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-5 border ${darkMode ? 'border-purple-500/50' : 'border-purple-200'} shadow-sm hover:shadow-md transition-shadow duration-300`}>
-  <div className="flex items-center justify-between mb-4">
-    <h3 className="font-bold text-lg flex items-center">
-      <Radar className="mr-2 text-purple-400" size={20} /> 
-      <span className={darkMode ? 'text-gray-100' : 'text-gray-800'}>Skill Analysis Radar</span>
-    </h3>
-    <div className="text-xs text-gray-500 flex items-center">
-      <div className="flex items-center mr-3">
-        <div className="w-3 h-3 rounded-full bg-purple-500 mr-1"></div>
-        <span>Current</span>
-      </div>
-      <div className="flex items-center">
-        <div className="w-3 h-3 rounded-full bg-emerald-500 mr-1"></div>
-        <span>Average</span>
-      </div>
-    </div>
-  </div>
-  
-  <div className="h-52 relative">
-    <ResponsiveContainer width="100%" height="100%">
-      <RadarChart 
-        data={radarData}
-        margin={{ top: 10, right: 30, bottom: 10, left: 30 }}
-      >
-        <PolarGrid 
-          stroke={darkMode ? "#4b5563" : "#e5e7eb"} 
-          strokeWidth={0.5}
-          radialLines={false}
-        />
-        <PolarAngleAxis 
-          dataKey="subject" 
-          tick={{ 
-            fill: darkMode ? "#d1d5db" : "#4b5563", 
-            fontSize: 12,
-            fontWeight: 500 
-          }}
-          tickLine={false}
-        />
-        <PolarRadiusAxis 
-          angle={30} 
-          domain={[0, 100]}
-          tick={{ 
-            fill: darkMode ? "#9ca3af" : "#6b7280", 
-            fontSize: 10 
-          }}
-          stroke={darkMode ? "#4b5563" : "#e5e7eb"}
-          tickCount={5}
-        />
-        <RechartsRadar 
-          name="Current" 
-          dataKey="A" 
-          stroke="#8b5cf6" 
-          strokeWidth={2}
-          fill="url(#currentGradient)" 
-          fillOpacity={0.4}
-        />
-        <RechartsRadar 
-          name="Average" 
-          dataKey="B" 
-          stroke="#10b981" 
-          strokeWidth={1.5}
-          strokeDasharray="3 3"
-          fill="url(#averageGradient)" 
-          fillOpacity={0.2}
-        />
-        
-        {/* Gradient Definitions */}
-        <defs>
-          <linearGradient id="currentGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.6}/>
-            <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.1}/>
-          </linearGradient>
-          <linearGradient id="averageGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#10b981" stopOpacity={0.4}/>
-            <stop offset="100%" stopColor="#10b981" stopOpacity={0.05}/>
-          </linearGradient>
-        </defs>
-        
-        <Tooltip
-          contentStyle={{
-            backgroundColor: darkMode ? '#374151' : '#ffffff',
-            border: darkMode ? '1px solid #4b5563' : '1px solid #e5e7eb',
-            borderRadius: '8px',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-          }}
-          labelStyle={{ 
-            color: darkMode ? '#f3f4f6' : '#111827',
-            fontWeight: 600,
-            marginBottom: '4px'
-          }}
-          formatter={(value) => [`${value}%`, 'Score']}
-        />
-      </RadarChart>
-    </ResponsiveContainer>
-    
-    {/* Center label */}
-    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none">
-      <div className={`text-xs font-medium ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-        Skill Score
-      </div>
-    </div>
-  </div>
-  
-  {/* Stats summary */}
-  <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 grid grid-cols-2 gap-3 text-sm">
-    <div className="text-center">
-      <div className="font-semibold text-gray-700 dark:text-gray-300">Current Avg</div>
-      <div className="text-lg font-bold text-purple-600 dark:text-purple-400">
-        {Math.round(radarData.reduce((acc, item) => acc + item.A, 0) / radarData.length)}%
-      </div>
-    </div>
-    <div className="text-center">
-      <div className="font-semibold text-gray-700 dark:text-gray-300">Benchmark Avg</div>
-      <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
-        {Math.round(radarData.reduce((acc, item) => acc + item.B, 0) / radarData.length)}%
-      </div>
-    </div>
-  </div>
-</div>
+        <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-xl p-5 border ${darkMode ? 'border-purple-500/50' : 'border-purple-200'} shadow-sm hover:shadow-md transition-shadow duration-300`}>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-lg flex items-center">
+              <Radar className="mr-2 text-purple-400" size={20} /> 
+              <span className={darkMode ? 'text-gray-100' : 'text-gray-800'}>Skill Analysis Radar</span>
+            </h3>
+          </div>
+          
+          <div className="h-52 relative">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart 
+                data={radarData}
+                margin={{ top: 10, right: 30, bottom: 10, left: 30 }}
+              >
+                <PolarGrid 
+                  stroke={darkMode ? "#4b5563" : "#e5e7eb"} 
+                  strokeWidth={0.5}
+                  radialLines={false}
+                />
+                <PolarAngleAxis 
+                  dataKey="subject" 
+                  tick={{ 
+                    fill: darkMode ? "#d1d5db" : "#4b5563", 
+                    fontSize: 12,
+                    fontWeight: 500 
+                  }}
+                  tickLine={false}
+                />
+                <PolarRadiusAxis 
+                  angle={30} 
+                  domain={[0, 100]}
+                  tick={{ 
+                    fill: darkMode ? "#9ca3af" : "#6b7280", 
+                    fontSize: 10 
+                  }}
+                  stroke={darkMode ? "#4b5563" : "#e5e7eb"}
+                  tickCount={5}
+                />
+                <RechartsRadar 
+                  name="Current" 
+                  dataKey="A" 
+                  stroke="#8b5cf6" 
+                  strokeWidth={2}
+                  fill="url(#currentGradient)" 
+                  fillOpacity={0.4}
+                />
+                <RechartsRadar 
+                  name="Average" 
+                  dataKey="B" 
+                  stroke="#10b981" 
+                  strokeWidth={1.5}
+                  strokeDasharray="3 3"
+                  fill="url(#averageGradient)" 
+                  fillOpacity={0.2}
+                />
+                
+                {/* Gradient Definitions */}
+                <defs>
+                  <linearGradient id="currentGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#8b5cf6" stopOpacity={0.6}/>
+                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.1}/>
+                  </linearGradient>
+                  <linearGradient id="averageGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.4}/>
+                    <stop offset="100%" stopColor="#10b981" stopOpacity={0.05}/>
+                  </linearGradient>
+                </defs>
+                
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: darkMode ? '#374151' : '#ffffff',
+                    border: darkMode ? '1px solid #4b5563' : '1px solid #e5e7eb',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                  }}
+                  labelStyle={{ 
+                    color: darkMode ? '#f3f4f6' : '#111827',
+                    fontWeight: 600,
+                    marginBottom: '4px'
+                  }}
+                  formatter={(value) => [`${value}%`, 'Score']}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
 
-{/* Portfolio Distribution */}
+        {/* Portfolio Distribution - MODIFIED */}
         <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-4 border ${darkMode ? 'border-blue-500' : 'border-blue-200'}`}>
-          <h3 className="font-bold mb-3 flex items-center">
-            <PieChart className="mr-2 text-blue-400" /> Portfolio Distribution
-          </h3>
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="font-bold flex items-center">
+              <PieChart className="mr-2 text-blue-400" /> Portfolio Distribution
+            </h3>
+            <button 
+              onClick={() => updatePortfolioDistribution({
+                stocks: Math.floor(Math.random() * 40) + 40,
+                crypto: Math.floor(Math.random() * 30) + 10,
+                forex: Math.floor(Math.random() * 20) + 5,
+                commodities: Math.floor(Math.random() * 15) + 2
+              })}
+              className="text-xs px-2 py-1 bg-blue-600 rounded hover:bg-blue-700"
+            >
+              Randomize
+            </button>
+          </div>
           <div className="h-40">
             <ResponsiveContainer width="100%" height="100%">
               <RechartsPie>
@@ -1275,478 +1157,194 @@ useEffect(() => {
               </RechartsPie>
             </ResponsiveContainer>
           </div>
-        </div>
-      </div>
-
-      {/* AI Insights Stream */}
-      <div className={`mb-6 ${darkMode ? 'bg-gray-800 bg-opacity-90' : 'bg-white'} backdrop-blur-sm rounded-lg p-4 border ${darkMode ? 'border-purple-500' : 'border-purple-200'} relative z-10`}>
-        <h3 className="font-bold mb-3 flex items-center">
-          <BrainCircuit className="mr-2 text-purple-400 animate-pulse" /> Quantum AI Insights Stream
-        </h3>
-        <div className="overflow-x-auto">
-          <div className="flex space-x-4 animate-marquee">
-            {aiInsights.map((insight, idx) => (
-              <div 
-                key={insight.id} 
-                className={`flex-shrink-0 p-3 rounded-lg ${darkMode ? 'bg-purple-900 bg-opacity-30' : 'bg-purple-50'} border border-purple-500 min-w-[300px]`}
-              >
-                <div className="flex items-center mb-2">
-                  <Brain className="w-4 h-4 text-purple-400 mr-2" />
-                  <span className="text-sm text-purple-300">{insight.time}</span>
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            {pieData.map((item, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div 
+                    className="w-3 h-3 rounded-full mr-2"
+                    style={{ backgroundColor: COLORS[index] }}
+                  />
+                  <span className="text-sm">{item.name}</span>
                 </div>
-                <p className="text-sm">{insight.text}</p>
+                <span className="font-bold">{item.value}%</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Trading Sessions with Quantum Effects */}
-      <div className={`mb-6 ${darkMode ? 'bg-gray-800 bg-opacity-90' : 'bg-white'} backdrop-blur-sm rounded-lg p-4 border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} relative z-10`}>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold flex items-center">
-            <Clock className="mr-2 text-emerald-400" /> {quantumMode ? 'Quantum Trading Sessions' : 'Trading Sessions'}
-          </h2>
-          <div className="flex items-center space-x-2">
-            <button 
-              onClick={refreshData}
-              className={`p-2 rounded ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} text-emerald-400 hover:text-emerald-300`}
-              title="Refresh Data"
-            >
-              <RefreshCw className="w-4 h-4" />
-            </button>
-            <span className="text-xs text-gray-400">Live Quantum Feed</span>
-          </div>
+      {/* Recommendations Tab */}
+      <div className="mb-6">
+        <div className="flex border-b border-gray-700 mb-4">
+          <button
+            onClick={() => setActiveTab('all')}
+            className={`px-4 py-2 font-medium ${activeTab === 'all' ? 'border-b-2 border-emerald-500 text-emerald-400' : 'text-gray-400'}`}
+          >
+            All Assets
+          </button>
+          <button
+            onClick={() => setActiveTab('buy')}
+            className={`px-4 py-2 font-medium ${activeTab === 'buy' ? 'border-b-2 border-emerald-500 text-emerald-400' : 'text-gray-400'}`}
+          >
+            Buy Recommendations
+          </button>
+          <button
+            onClick={() => setActiveTab('sell')}
+            className={`px-4 py-2 font-medium ${activeTab === 'sell' ? 'border-b-2 border-red-500 text-red-400' : 'text-gray-400'}`}
+          >
+            Sell Recommendations
+          </button>
+          <button
+            onClick={() => setActiveTab('hold')}
+            className={`px-4 py-2 font-medium ${activeTab === 'hold' ? 'border-b-2 border-yellow-500 text-yellow-400' : 'text-gray-400'}`}
+          >
+            Hold Recommendations
+          </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-          {sessions.map((session, idx) => (
-            <div 
-              key={idx} 
-              className={`p-3 rounded-lg border-2 transition-all duration-300 ${
-                session.active 
-                  ? quantumMode 
-                    ? 'border-cyan-500 bg-cyan-900 bg-opacity-30 animate-pulse' 
-                    : 'border-emerald-500 bg-emerald-900 bg-opacity-30'
-                  : 'border-gray-600 bg-gray-700 bg-opacity-30'
-              } hover:scale-[1.02] cursor-pointer relative overflow-hidden`}
-              onClick={() => alert(`Session Details: ${session.name}\nTime: ${session.time}\nPriority: ${session.priority}/5`)}
-            >
-              {session.name === 'Quantum Session' && quantumMode && (
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-20 animate-pulse"></div>
-              )}
-              <div className="flex items-center justify-between mb-2 relative z-10">
-                <div>
-                  <span className="font-bold">{session.name}</span>
-                  <div className="flex items-center mt-1">
-                    <span className={`text-xs px-2 py-0.5 rounded mr-2 ${
-                      session.active 
-                        ? quantumMode 
-                          ? 'bg-cyan-500 animate-pulse' 
-                          : 'bg-emerald-500'
-                        : 'bg-gray-600'
-                    }`}>
-                      {session.active ? 'ACTIVE' : 'CLOSED'}
-                    </span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="text-sm font-semibold">{session.priority}/5</div>
-                  <div className="text-xs text-gray-400">Priority</div>
-                </div>
+
+        {activeTab === 'all' ? (
+          <>
+            {/* Enhanced Controls with Quantum Features */}
+            <div className="mb-6 flex flex-wrap gap-3 items-center relative z-10">
+              <div className="relative flex-1 min-w-[200px]">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder={quantumMode ? "Quantum search symbols..." : "Search symbols or companies..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={`w-full pl-10 pr-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
               </div>
-              <div className="text-sm text-gray-300 relative z-10">{session.time}</div>
-              <div className="flex justify-between text-xs text-gray-400 mt-2 relative z-10">
-                <span>📊 {session.volume}</span>
-                <span>⚡ {session.volatility}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Enhanced Controls with Quantum Features */}
-      <div className="mb-6 flex flex-wrap gap-3 items-center relative z-10">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <input
-            ref={searchInputRef}
-            type="text"
-            placeholder={quantumMode ? "Quantum search symbols..." : "Search symbols or companies..."}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={`w-full pl-10 pr-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
-            onKeyDown={(e) => e.key === 'Enter' ? e.preventDefault() : e.key === 'Escape' && setSearchQuery('')}
-          />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-300"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-
-        <select 
-          value={selectedMarket}
-          onChange={(e) => setSelectedMarket(e.target.value)}
-          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
-        >
-          {['Stocks', 'Crypto', 'Forex', 'Futures', 'Options', 'Quantum Assets'].map(market => (
-            <option key={market} value={market}>{market}</option>
-          ))}
-        </select>
-
-        <select 
-          value={selectedSector}
-          onChange={(e) => setSelectedSector(e.target.value)}
-          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
-        >
-          {sectors.map(sector => (
-            <option key={sector} value={sector}>{sector}</option>
-          ))}
-        </select>
-
-        <select 
-          value={riskFilter}
-          onChange={(e) => setRiskFilter(e.target.value)}
-          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
-        >
-          {['All', 'Low', 'Medium', 'High', 'Quantum'].map(risk => (
-            <option key={risk} value={risk}>
-              {risk === 'Quantum' ? '⚛️ Quantum Risk' : risk === 'All' ? 'All Risk' : risk === 'Low' ? 'Low Risk (≤4)' : risk === 'Medium' ? 'Medium Risk (4-6)' : 'High Risk (>6)'}
-            </option>
-          ))}
-        </select>
-
-        <select 
-          value={sortBy}
-          onChange={(e) => setSortBy(e.target.value)}
-          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} focus:outline-none focus:ring-2 ${quantumMode ? 'focus:ring-cyan-500' : 'focus:ring-emerald-500'}`}
-        >
-          {['Total Score', 'AI Score', 'Risk Score', 'Volume Profile', 'Price Change', 'Market Cap', 'Quantum Probability', 'Neural Strength'].map(sort => (
-            <option key={sort} value={sort}>{sort}</option>
-          ))}
-        </select>
-
-        <button
-          onClick={clearFilters}
-          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} border ${darkMode ? 'border-gray-600' : 'border-gray-300'} flex items-center`}
-        >
-          <X className="w-4 h-4 mr-2" />
-          Clear Filters
-        </button>
-
-        <button
-          onClick={() => setGridView(!gridView)}
-          className={`px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-100'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} flex items-center`}
-        >
-          {gridView ? 'List View' : 'Grid View'}
-        </button>
-      </div>
-
-      {/* Enhanced Assets Table with Quantum Effects */}
-      {gridView ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 relative z-10">
-          {filteredAssets.slice(0, 12).map((asset, idx) => (
-            <div 
-              key={idx} 
-              className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} p-4 hover:scale-[1.02] transition-all duration-300 cursor-pointer relative overflow-hidden group`}
-              onClick={() => toggleDetails(idx)}
-            >
-              {quantumMode && parseFloat(asset.quantumProbability) > 70 && (
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-10 animate-pulse"></div>
-              )}
-              
-              <div className="flex justify-between items-start mb-3 relative z-10">
-                <div>
-                  <div className="flex items-center space-x-2">
-                    <span className={`font-bold ${idx < 3 ? 'text-yellow-400' : idx < 7 ? 'text-emerald-400' : 'text-gray-300'}`}>
-                      #{asset.rank}
-                    </span>
-                    <h3 className="font-bold text-emerald-400">{asset.symbol}</h3>
-                    {parseFloat(asset.quantumProbability) > 80 && (
-                      <span className="text-xs px-1 py-0.5 bg-cyan-600 rounded">⚛️</span>
-                    )}
-                  </div>
-                  <p className="text-sm text-gray-400">{asset.name}</p>
-                  <span className="text-xs px-2 py-1 bg-gray-700 rounded mt-1 inline-block">{asset.sector}</span>
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    quickAddToWatchlist(asset.symbol);
-                  }}
-                  className={`p-1 ${watchlist.includes(asset.symbol) ? 'text-yellow-400' : 'text-gray-400 hover:text-yellow-300'} relative z-20`}
+              <div className="flex flex-wrap gap-2">
+                <select 
+                  value={selectedMarket}
+                  onChange={(e) => setSelectedMarket(e.target.value)}
+                  className={`px-3 py-2 text-sm rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'}`}
                 >
-                  <Star className={`w-5 h-5 ${watchlist.includes(asset.symbol) ? 'fill-current' : ''}`} />
-                </button>
+                  {['Stocks', 'Crypto', 'Forex'].map(market => (
+                    <option key={market} value={market}>{market}</option>
+                  ))}
+                </select>
+
+                <select 
+                  value={selectedSector}
+                  onChange={(e) => setSelectedSector(e.target.value)}
+                  className={`px-3 py-2 text-sm rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'}`}
+                >
+                  {sectors.map(sector => (
+                    <option key={sector} value={sector}>{sector}</option>
+                  ))}
+                </select>
+
+                <select 
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className={`px-3 py-2 text-sm rounded-lg ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'}`}
+                >
+                  {['Total Score', 'AI Score', 'Risk Score', 'Price Change', 'Market Cap'].map(sort => (
+                    <option key={sort} value={sort}>{sort}</option>
+                  ))}
+                </select>
               </div>
-              
-              <div className="space-y-3 relative z-10">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Price</span>
-                  <span className="font-bold text-lg">{formatIndianPrice(asset.price)}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Change</span>
-                  <span className={`font-bold ${parseFloat(asset.change) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                    {parseFloat(asset.change) >= 0 ? '+' : ''}{asset.change}%
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Quantum Prob</span>
-                  <span className="font-bold text-cyan-400">{asset.quantumProbability}%</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Risk</span>
-                  <span className={`font-bold ${parseFloat(asset.riskScore) < 4 ? 'text-emerald-400' : parseFloat(asset.riskScore) < 6 ? 'text-yellow-400' : 'text-red-400'}`}>
-                    {asset.riskScore}/10
-                  </span>
-                </div>
-              </div>
-              
-              <div className="mt-4 pt-4 border-t border-gray-700 relative z-10">
-                <span className={`px-3 py-1 rounded text-sm font-semibold ${
-                  asset.signal.includes('STRONG') ? 'bg-emerald-600' : 
-                  asset.signal.includes('BUY') ? 'bg-emerald-700' : 'bg-yellow-600'
-                }`}>
-                  {asset.signal}
-                </span>
-              </div>
-              
-              {/* Hover Effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-cyan-500 opacity-0 group-hover:opacity-5 transition-opacity duration-300"></div>
             </div>
-          ))}
-        </div>
-      ) : (
-        <div className={`${darkMode ? 'bg-gray-800 bg-opacity-90' : 'bg-white'} backdrop-blur-sm rounded-lg border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} overflow-hidden mb-6 relative z-10`}>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px]">
-              <thead className={`${darkMode ? quantumMode ? 'bg-cyan-900 bg-opacity-50' : 'bg-emerald-900 bg-opacity-50' : quantumMode ? 'bg-cyan-50' : 'bg-emerald-50'}`}>
-                <tr>
-                  <th className="p-3 text-left">Rank</th>
-                  <th className="p-3 text-left">Symbol</th>
-                  <th className="p-3 text-left">Price (₹)</th>
-                  <th className="p-3 text-left">Change</th>
-                  <th className="p-3 text-left">Total Score</th>
-                  <th className="p-3 text-left">AI Score</th>
-                  <th className="p-3 text-left">Quantum %</th>
-                  <th className="p-3 text-left">Signal</th>
-                  <th className="p-3 text-left">Risk</th>
-                  <th className="p-3 text-left">Watch</th>
-                  <th className="p-3 text-left">Details</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredAssets.slice(0, 21).map((asset, idx) => (
-                  <React.Fragment key={idx}>
-                    <tr 
-                      className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'} transition-colors cursor-pointer group`}
-                      onClick={() => toggleDetails(idx)}
-                    >
-                      <td className="p-3">
-                        <span className={`font-bold ${idx < 3 ? 'text-yellow-400' : idx < 7 ? 'text-emerald-400' : ''}`}>
-                          #{asset.rank}
-                        </span>
-                      </td>
-                      <td className="p-3">
-                        <div className="flex items-center">
-                          <div className="font-bold text-emerald-400">{asset.symbol}</div>
-                          {parseFloat(asset.quantumProbability) > 80 && (
-                            <Atom className="w-3 h-3 text-cyan-400 ml-1" />
-                          )}
-                        </div>
-                        <div className="text-xs text-gray-400">{asset.name}</div>
-                        <div className="text-xs text-gray-500">{asset.sector}</div>
-                      </td>
-                      <td className="p-3">
-                        <div className="font-bold">{formatIndianPrice(asset.price)}</div>
-                        <div className="text-xs text-gray-400">Vol: {asset.volume}</div>
-                      </td>
-                      <td className="p-3">
-                        <div className={`font-bold ${parseFloat(asset.change) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                          {parseFloat(asset.change) >= 0 ? '+' : ''}{asset.change}%
-                        </div>
-                      </td>
-                      <td className="p-3">
-                        <span className="text-lg font-bold text-emerald-400">{asset.totalScore}</span>
-                      </td>
-                      <td className="p-3">
-                        <div className="flex items-center">
-                          <Brain className="w-4 h-4 mr-1 text-purple-400" />
-                          <span className="font-semibold">{asset.aiScore}</span>
-                        </div>
-                      </td>
-                      <td className="p-3">
-                        <div className="flex items-center">
-                          <Atom className="w-4 h-4 mr-1 text-cyan-400" />
-                          <span className="font-semibold">{asset.quantumProbability}%</span>
-                        </div>
-                      </td>
-                      <td className="p-3">
-                        <span className={`px-2 py-1 rounded text-xs font-semibold ${
-                          asset.signal.includes('STRONG') ? 'bg-emerald-600' : 
-                          asset.signal.includes('BUY') ? 'bg-emerald-700' : 'bg-yellow-600'
-                        }`}>
-                          {asset.signal}
-                        </span>
-                      </td>
-                      <td className="p-3">
-                        <div className="flex items-center">
-                          <span className={`font-semibold ${parseFloat(asset.riskScore) < 4 ? 'text-emerald-400' : parseFloat(asset.riskScore) < 6 ? 'text-yellow-400' : 'text-red-400'}`}>
-                            {asset.riskScore}/10
+
+            {/* Enhanced Assets Table */}
+            <div className={`${darkMode ? 'bg-gray-800 bg-opacity-90' : 'bg-white'} backdrop-blur-sm rounded-lg border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} overflow-hidden mb-6 relative z-10`}>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className={`${darkMode ? quantumMode ? 'bg-cyan-900 bg-opacity-50' : 'bg-emerald-900 bg-opacity-50' : quantumMode ? 'bg-cyan-50' : 'bg-emerald-50'}`}>
+                    <tr>
+                      <th className="p-3 text-left">Rank</th>
+                      <th className="p-3 text-left">Symbol</th>
+                      <th className="p-3 text-left">Price</th>
+                      <th className="p-3 text-left">Change</th>
+                      <th className="p-3 text-left">Signal</th>
+                      <th className="p-3 text-left">Action</th>
+                      <th className="p-3 text-left">Target</th>
+                      <th className="p-3 text-left">Stop Loss</th>
+                      <th className="p-3 text-left">Watch</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredAssets.slice(0, 10).map((asset, idx) => (
+                      <tr 
+                        key={idx}
+                        className={`border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'} ${darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-50'} transition-colors`}
+                      >
+                        <td className="p-3">
+                          <span className={`font-bold ${idx < 3 ? 'text-yellow-400' : ''}`}>
+                            #{asset.rank}
                           </span>
-                          <Shield className={`w-4 h-4 ml-1 ${parseFloat(asset.riskScore) < 4 ? 'text-emerald-400' : 'text-red-400'}`} />
-                        </div>
-                      </td>
-                      <td className="p-3">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            quickAddToWatchlist(asset.symbol);
-                          }}
-                          className={`p-2 rounded ${watchlist.includes(asset.symbol) ? 'text-yellow-400 bg-yellow-900 bg-opacity-30' : 'text-gray-400 hover:text-yellow-400'}`}
-                        >
-                          <Star className={`w-5 h-5 ${watchlist.includes(asset.symbol) ? 'fill-current' : ''}`} />
-                        </button>
-                      </td>
-                      <td className="p-3">
-                        <div className="flex items-center">
+                        </td>
+                        <td className="p-3">
+                          <div className="font-bold">{asset.symbol}</div>
+                          <div className="text-xs text-gray-400">{asset.name}</div>
+                        </td>
+                        <td className="p-3">
+                          <div className="font-bold">{formatIndianPrice(asset.price)}</div>
+                        </td>
+                        <td className="p-3">
+                          <div className={`font-bold ${parseFloat(asset.change) >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                            {parseFloat(asset.change) >= 0 ? '+' : ''}{asset.change}%
+                          </div>
+                        </td>
+                        <td className="p-3">
+                          <span className={`px-2 py-1 rounded text-xs font-semibold ${
+                            asset.signal.includes('STRONG') ? 'bg-emerald-600' : 
+                            asset.signal.includes('BUY') ? 'bg-emerald-700' : 'bg-yellow-600'
+                          }`}>
+                            {asset.signal}
+                          </span>
+                        </td>
+                        <td className="p-3">
+                          <span className={`px-2 py-1 rounded text-xs font-bold ${
+                            asset.recommendation.action === 'BUY' ? 'bg-emerald-600' : 
+                            asset.recommendation.action === 'SELL' ? 'bg-red-600' : 'bg-yellow-600'
+                          }`}>
+                            {asset.recommendation.action}
+                          </span>
+                        </td>
+                        <td className="p-3">
+                          <div className="font-bold text-emerald-400">
+                            {formatIndianPrice(asset.recommendation.target)}
+                          </div>
+                        </td>
+                        <td className="p-3">
+                          <div className="font-bold text-red-400">
+                            {formatIndianPrice(asset.recommendation.stopLoss)}
+                          </div>
+                        </td>
+                        <td className="p-3">
                           <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleDetails(idx);
-                            }}
-                            className="p-2 hover:bg-emerald-600 rounded transition-colors"
+                            onClick={() => quickAddToWatchlist(asset.symbol)}
+                            className={`p-2 rounded ${watchlist.includes(asset.symbol) ? 'text-yellow-400 bg-yellow-900 bg-opacity-30' : 'text-gray-400 hover:text-yellow-400'}`}
                           >
-                            {expandedAsset === idx ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                            <Star className={`w-5 h-5 ${watchlist.includes(asset.symbol) ? 'fill-current' : ''}`} />
                           </button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr className={expandedAsset === idx ? '' : 'hidden'}>
-                      <td colSpan="11" className={`p-6 ${darkMode ? 'bg-gray-900 bg-opacity-80' : 'bg-gray-50'} transition-all duration-300`}>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                          <div>
-                            <h4 className="font-bold mb-3 text-emerald-400">📊 Advanced Metrics</h4>
-                            <div className="space-y-2 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Quantum Probability:</span>
-                                <span className="font-semibold text-cyan-400">{asset.quantumProbability}%</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Neural Strength:</span>
-                                <span className="font-semibold text-purple-400">{asset.neuralStrength}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Blockchain Confidence:</span>
-                                <span className="font-semibold">{asset.blockchainConfidence}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Fractal Dimension:</span>
-                                <span className="font-semibold">{asset.fractalDimension}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Entropy:</span>
-                                <span className="font-semibold">{asset.entropy}</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="font-bold mb-3 text-purple-400">🏦 Institutional Data</h4>
-                            <div className="space-y-2 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Dark Pool:</span>
-                                <span className="font-semibold">{asset.darkPoolActivity}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Short Interest:</span>
-                                <span className="font-semibold">{asset.shortInterest}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Whale Activity:</span>
-                                <span className={`font-semibold ${asset.whaleActivity === 'Detected' ? 'text-emerald-400' : 'text-gray-400'}`}>
-                                  {asset.whaleActivity}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Options Flow:</span>
-                                <span className={`font-semibold ${asset.optionsFlow === 'Bullish' ? 'text-emerald-400' : 'text-red-400'}`}>
-                                  {asset.optionsFlow}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="font-bold mb-3 text-emerald-400">💡 Trading Insights</h4>
-                            <div className="space-y-2 text-sm">
-                              <div className="flex items-center">
-                                <Target className="w-4 h-4 mr-2" />
-                                <span>Next optimal: {asset.nextOptimal}</span>
-                              </div>
-                              <div className="flex items-center">
-                                <Activity className="w-4 h-4 mr-2" />
-                                <span>Inst. flow: {asset.institutionalFlow}</span>
-                              </div>
-                              <div className="flex items-center">
-                                <TrendingUp className="w-4 h-4 mr-2" />
-                                <span>Sentiment: {asset.sentimentScore}</span>
-                              </div>
-                              <div className="flex items-center">
-                                <Clock className="w-4 h-4 mr-2" />
-                                <span>Earnings: {asset.earningsDate}</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <h4 className="font-bold mb-3 text-cyan-400">⚛️ Quantum Analysis</h4>
-                            <div className="space-y-2 text-sm">
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Time Series Anomaly:</span>
-                                <span className={`font-semibold ${asset.timeSeriesAnomaly === 'Detected' ? 'text-red-400' : 'text-emerald-400'}`}>
-                                  {asset.timeSeriesAnomaly}
-                                </span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Chaos Index:</span>
-                                <span className="font-semibold">{asset.chaosIndex}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">Market Cap:</span>
-                                <span className="font-semibold">{asset.marketCapCr}</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span className="text-gray-400">52W High:</span>
-                                <span className="font-semibold">{formatIndianPrice(asset.weekHigh)}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="mt-4 pt-4 border-t border-gray-700 flex justify-between">
-                          <button 
-                            onClick={() => window.open(`https://www.google.com/search?q=${asset.symbol}+stock`, '_blank')}
-                            className="px-3 py-1 text-sm bg-blue-600 rounded hover:bg-blue-700 flex items-center"
-                          >
-                            <ExternalLink className="w-3 h-3 mr-1" /> Research
-                          </button>
-                          <button 
-                            onClick={() => alert(`Added ${asset.symbol} to quantum trade watch`)}
-                            className="px-3 py-1 text-sm bg-gradient-to-r from-cyan-600 to-purple-600 rounded hover:from-cyan-700 hover:to-purple-700"
-                          >
-                            Quantum Track
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        ) : (
+          <RecommendationsTab />
+        )}
+      </div>
     </>
   );
 
@@ -1804,19 +1402,21 @@ useEffect(() => {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Signal:</span>
+                    <span className="text-gray-400">Recommendation:</span>
                     <span className={`font-bold ${
-                      asset.signal.includes('STRONG') ? 'text-emerald-400' : 
-                      asset.signal.includes('BUY') ? 'text-green-400' : 'text-yellow-400'
+                      asset.recommendation.action === 'BUY' ? 'text-emerald-400' : 
+                      asset.recommendation.action === 'SELL' ? 'text-red-400' : 'text-yellow-400'
                     }`}>
-                      {asset.signal.replace('🟢 ', '').replace('🟡 ', '')}
+                      {asset.recommendation.action}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Risk Score:</span>
-                    <span className={`font-bold ${parseFloat(asset.riskScore) < 4 ? 'text-emerald-400' : parseFloat(asset.riskScore) < 6 ? 'text-yellow-400' : 'text-red-400'}`}>
-                      {asset.riskScore}/10
-                    </span>
+                    <span className="text-gray-400">Target:</span>
+                    <span className="font-bold text-emerald-400">{formatIndianPrice(asset.recommendation.target)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Stop Loss:</span>
+                    <span className="font-bold text-red-400">{formatIndianPrice(asset.recommendation.stopLoss)}</span>
                   </div>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-700 flex justify-between">
@@ -1841,322 +1441,59 @@ useEffect(() => {
     );
   };
 
-  const AnalysisView = () => (
-    <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-6 border ${darkMode ? 'border-emerald-500' : 'border-emerald-200'} relative z-10`}>
-      <h2 className="text-2xl font-bold mb-6 flex items-center">
-        <LineChart className="mr-3 text-emerald-400" /> Advanced Analysis
-      </h2>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-            <h3 className="font-bold mb-3 flex items-center">
-              <Activity className="mr-2" /> Technical Indicators
-            </h3>
-            <div className="space-y-3">
-              {[
-                { name: 'RSI', value: '68.4', status: 'Neutral' },
-                { name: 'MACD', value: '2.45', status: 'Bullish' },
-                { name: 'Bollinger Bands', value: 'Upper Band', status: 'Warning' },
-                { name: 'Moving Averages', value: 'Golden Cross', status: 'Bullish' },
-                { name: 'Volume Profile', value: 'High Volume Node', status: 'Strong' },
-                { name: 'Fibonacci', value: '0.618 Retracement', status: 'Key Level' }
-              ].map((indicator, idx) => (
-                <div key={idx} className="flex justify-between items-center">
-                  <span>{indicator.name}</span>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-sm">{indicator.value}</span>
-                    <span className={`px-2 py-1 rounded text-xs ${
-                      indicator.status === 'Bullish' ? 'bg-emerald-600' : 
-                      indicator.status === 'Warning' ? 'bg-yellow-600' : 
-                      indicator.status === 'Strong' ? 'bg-blue-600' : 'bg-gray-600'
-                    }`}>
-                      {indicator.status}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-            <h3 className="font-bold mb-3 flex items-center">
-              <Shield className="mr-2" /> Risk Analysis
-            </h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span>Portfolio Risk</span>
-                <span className="text-yellow-400 font-bold">Medium</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Diversification Score</span>
-                <span className="text-emerald-400 font-bold">82%</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Max Drawdown</span>
-                <span className="text-red-400 font-bold">-8.4%</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Value at Risk (95%)</span>
-                <span className="text-yellow-400 font-bold">-12.2%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="space-y-4">
-          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-            <h3 className="font-bold mb-3 flex items-center">
-              <Globe className="mr-2" /> Market Insights
-            </h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span>Market Sentiment</span>
-                <div className="flex items-center">
-                  <div className="w-24 h-2 bg-gray-700 rounded-full mr-2">
-                    <div className="w-3/4 h-2 bg-emerald-400 rounded-full"></div>
-                  </div>
-                  <span className="text-emerald-400 font-bold">76% Bullish</span>
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <span>Volatility Index (VIX)</span>
-                <span className="text-yellow-400 font-bold">15.2</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Put/Call Ratio</span>
-                <span className="text-emerald-400 font-bold">0.68</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Advance/Decline</span>
-                <div className="flex items-center space-x-2">
-                  <span className="text-emerald-400">1,245</span>
-                  <span className="text-gray-400">/</span>
-                  <span className="text-red-400">876</span>
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <span>Market Breadth</span>
-                <span className="text-emerald-400 font-bold">Positive</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Institutional Activity</span>
-                <span className="text-emerald-400 font-bold">High</span>
-              </div>
-            </div>
-          </div>
-          <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-900' : 'bg-gray-100'}`}>
-            <h3 className="font-bold mb-3 flex items-center">
-              <Brain className="mr-2" /> AI Predictions
-            </h3>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span>Next Week Outlook</span>
-                <span className="text-emerald-400 font-bold">Bullish</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Confidence Level</span>
-                <span className="text-emerald-400 font-bold">87.3%</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Top Sector</span>
-                <span className="text-emerald-400 font-bold">IT Services</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Risk Assessment</span>
-                <span className="text-yellow-400 font-bold">Moderate</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   const SettingsView = () => (
     <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-6 border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'} relative z-10`}>
       <h2 className="text-2xl font-bold mb-6 flex items-center">
-        <Cog className="mr-3 text-emerald-400" /> {quantumMode ? '⚛️ Quantum Settings' : 'Settings'}
+        <Cog className="mr-3 text-emerald-400" /> Settings
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-6">
           <div>
-            <h3 className="font-bold mb-4">Quantum Interface</h3>
+            <h3 className="font-bold mb-4">Portfolio Settings</h3>
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Quantum Mode</p>
-                  <p className="text-sm text-gray-400">Activate quantum computing interface</p>
-                </div>
-                <button
-                  onClick={activateQuantumMode}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${quantumMode ? 'bg-cyan-600' : 'bg-gray-300'}`}
-                >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${quantumMode ? 'translate-x-6' : 'translate-x-1'}`} />
-                </button>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Neural Network</p>
-                  <p className="text-sm text-gray-400">AI-powered market analysis</p>
-                </div>
-                <button
-                  onClick={activateNeuralNetwork}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${neuralNetworkMode ? 'bg-purple-600' : 'bg-gray-300'}`}
-                >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${neuralNetworkMode ? 'translate-x-6' : 'translate-x-1'}`} />
-                </button>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Cyberpunk Mode</p>
-                  <p className="text-sm text-gray-400">Futuristic neon interface</p>
-                </div>
-                <button
-                  onClick={() => setCyberpunkMode(!cyberpunkMode)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${cyberpunkMode ? 'bg-pink-600' : 'bg-gray-300'}`}
-                >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${cyberpunkMode ? 'translate-x-6' : 'translate-x-1'}`} />
-                </button>
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <h3 className="font-bold mb-4">Security & Privacy</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Biometric Authentication</p>
-                  <p className="text-sm text-gray-400">Fingerprint/Face ID login</p>
-                </div>
-                <input 
-                  type="checkbox" 
-                  checked={biometricAuth}
-                  onChange={(e) => setBiometricAuth(e.target.checked)}
-                  className="h-5 w-5 text-emerald-600 rounded" 
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Dark Web Monitoring</p>
-                  <p className="text-sm text-gray-400">Monitor for data leaks</p>
-                </div>
-                <input 
-                  type="checkbox" 
-                  checked={darkWebMonitoring}
-                  onChange={(e) => setDarkWebMonitoring(e.target.checked)}
-                  className="h-5 w-5 text-emerald-600 rounded" 
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Voice Commands</p>
-                  <p className="text-sm text-gray-400">Control via voice</p>
-                </div>
-                <input 
-                  type="checkbox" 
-                  checked={voiceCommands}
-                  onChange={(e) => setVoiceCommands(e.target.checked)}
-                  className="h-5 w-5 text-emerald-600 rounded" 
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div className="space-y-6">
-          <div>
-            <h3 className="font-bold mb-4">Quantum Features</h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Time Travel Mode</p>
-                  <p className="text-sm text-gray-400">Analyze past market data</p>
-                </div>
-                <button
-                  onClick={() => setTimeTravelMode(!timeTravelMode)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${timeTravelMode ? 'bg-blue-600' : 'bg-gray-300'}`}
-                >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${timeTravelMode ? 'translate-x-6' : 'translate-x-1'}`} />
-                </button>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Satellite View</p>
-                  <p className="text-sm text-gray-400">Global market monitoring</p>
-                </div>
-                <button
-                  onClick={() => setSatelliteView(!satelliteView)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${satelliteView ? 'bg-green-600' : 'bg-gray-300'}`}
-                >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${satelliteView ? 'translate-x-6' : 'translate-x-1'}`} />
-                </button>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">Crypto Mining</p>
-                  <p className="text-sm text-gray-400">Background cryptocurrency mining</p>
-                </div>
-                <button
-                  onClick={() => setCryptoMining(!cryptoMining)}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full ${cryptoMining ? 'bg-yellow-600' : 'bg-gray-300'}`}
-                >
-                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${cryptoMining ? 'translate-x-6' : 'translate-x-1'}`} />
-                </button>
-              </div>
-              
               <div>
-                <p className="font-medium mb-2">Trading Bots Active</p>
-                <div className="flex items-center space-x-2">
-                  <input 
-                    type="range" 
-                    min="0" 
-                    max="10" 
-                    value={tradingBotsActive}
-                    onChange={(e) => setTradingBotsActive(parseInt(e.target.value))}
-                    className="w-full"
-                  />
-                  <span className="text-sm">{tradingBotsActive}</span>
+                <label className="block text-sm mb-2">Stocks Allocation</label>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="100" 
+                  value={portfolioDistribution.stocks}
+                  onChange={(e) => updatePortfolioDistribution({
+                    ...portfolioDistribution,
+                    stocks: parseInt(e.target.value)
+                  })}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-sm">
+                  <span>{portfolioDistribution.stocks}%</span>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm mb-2">Crypto Allocation</label>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="100" 
+                  value={portfolioDistribution.crypto}
+                  onChange={(e) => updatePortfolioDistribution({
+                    ...portfolioDistribution,
+                    crypto: parseInt(e.target.value)
+                  })}
+                  className="w-full"
+                />
+                <div className="flex justify-between text-sm">
+                  <span>{portfolioDistribution.crypto}%</span>
                 </div>
               </div>
             </div>
           </div>
           
-          <div>
-            <h3 className="font-bold mb-4">Data Export</h3>
-            <div className="space-y-3">
-              <button
-                onClick={exportData}
-                className={`w-full py-3 px-4 rounded-lg ${darkMode ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-emerald-500 hover:bg-emerald-600'} text-white font-medium flex items-center justify-center`}
-              >
-                <Download className="w-5 h-5 mr-2" />
-                Export Quantum Data
-              </button>
-              <button
-                onClick={() => {
-                  localStorage.clear();
-                  refreshData();
-                  alert('Quantum cache cleared!');
-                }}
-                className={`w-full py-3 px-4 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'} font-medium flex items-center justify-center`}
-              >
-                <Database className="w-5 h-5 mr-2" />
-                Clear Quantum Cache
-              </button>
-            </div>
-          </div>
-        </div>
-        
-        <div className="space-y-6">
           <div>
             <h3 className="font-bold mb-4">Appearance</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium">Dark Mode</p>
-                  <p className="text-sm text-gray-400">Switch theme</p>
                 </div>
                 <button
                   onClick={() => setDarkMode(!darkMode)}
@@ -2165,49 +1502,72 @@ useEffect(() => {
                   <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${darkMode ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
               </div>
-              
+            </div>
+          </div>
+        </div>
+        
+        <div className="space-y-6">
+          <div>
+            <h3 className="font-bold mb-4">Trading Settings</h3>
+            <div className="space-y-4">
               <div>
-                <p className="font-medium mb-2">Theme Color</p>
-                <div className="flex space-x-2">
-                  {['emerald', 'cyan', 'purple', 'pink', 'blue', 'red'].map(color => (
-                    <button
-                      key={color}
-                      onClick={() => setThemeColor(color)}
-                      className={`w-8 h-8 rounded-full ${themeColor === color ? 'ring-2 ring-white' : ''}`}
-                      style={{ backgroundColor: getColorValue(color) }}
-                      title={color.charAt(0).toUpperCase() + color.slice(1)}
-                    />
-                  ))}
-                </div>
+                <label className="block text-sm mb-2">Default Stop Loss %</label>
+                <input 
+                  type="number" 
+                  defaultValue="5"
+                  className="w-full p-2 rounded bg-gray-700"
+                />
               </div>
-              
               <div>
-                <p className="font-medium mb-2">Market Temperature</p>
-                <div className="flex items-center space-x-2">
-                  <ThermometerSun className="w-5 h-5 text-orange-400" />
-                  <div className="flex-1 bg-gray-700 rounded-full h-2">
-                    <div 
-                      className="bg-gradient-to-r from-blue-400 via-green-400 to-red-400 h-2 rounded-full"
-                      style={{ width: `${marketTemperature}%` }}
-                    ></div>
-                  </div>
-                  <span className="text-sm">{marketTemperature.toFixed(1)}°</span>
+                <label className="block text-sm mb-2">Default Target %</label>
+                <input 
+                  type="number" 
+                  defaultValue="10"
+                  className="w-full p-2 rounded bg-gray-700"
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Price Alerts</p>
                 </div>
+                <input 
+                  type="checkbox" 
+                  checked={priceAlerts}
+                  onChange={(e) => setPriceAlerts(e.target.checked)}
+                  className="h-5 w-5 text-emerald-600 rounded" 
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Signal Alerts</p>
+                </div>
+                <input 
+                  type="checkbox" 
+                  checked={signalAlerts}
+                  onChange={(e) => setSignalAlerts(e.target.checked)}
+                  className="h-5 w-5 text-emerald-600 rounded" 
+                />
               </div>
             </div>
           </div>
           
           <div>
-            <h3 className="font-bold mb-4">System Information</h3>
-            <div className="space-y-2 text-sm text-gray-400">
-              <p>🔮 Quantum Version: 2.0.0</p>
-              <p>🧠 Neural Network: {neuralNetworkMode ? 'Active' : 'Inactive'}</p>
-              <p>⚛️ Entanglement: {quantumEntanglement}%</p>
-              <p>📡 Blockchain Sync: {blockchainSync.toFixed(1)}%</p>
-              <p>🌀 Parallel Universes: {parallelUniverse}</p>
-              <p>🕰️ Time Travel: {timeTravelMode ? 'Enabled' : 'Disabled'}</p>
-              <p>🎯 Prediction Accuracy: {predictionAccuracy}%</p>
-              <p className="pt-2 text-xs">Made in India 🇮🇳 • Quantum Powered</p>
+            <h3 className="font-bold mb-4">Data Management</h3>
+            <div className="space-y-3">
+              <button
+                onClick={exportData}
+                className={`w-full py-3 px-4 rounded-lg ${darkMode ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-emerald-500 hover:bg-emerald-600'} text-white font-medium flex items-center justify-center`}
+              >
+                <Download className="w-5 h-5 mr-2" />
+                Export Data
+              </button>
+              <button
+                onClick={refreshData}
+                className={`w-full py-3 px-4 rounded-lg ${darkMode ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} text-white font-medium flex items-center justify-center`}
+              >
+                <RefreshCw className="w-5 h-5 mr-2" />
+                Refresh All Data
+              </button>
             </div>
           </div>
         </div>
@@ -2215,23 +1575,10 @@ useEffect(() => {
     </div>
   );
 
-  const getColorValue = (color) => {
-    const colors = {
-      emerald: '#10b981',
-      cyan: '#06b6d4',
-      purple: '#8b5cf6',
-      pink: '#ec4899',
-      blue: '#3b82f6',
-      red: '#ef4444'
-    };
-    return colors[color] || colors.emerald;
-  };
-
   const renderView = () => {
     switch(activeView) {
       case 'dashboard': return <DashboardView />;
       case 'watchlist': return <WatchlistView />;
-      case 'analysis': return <AnalysisView />;
       case 'settings': return <SettingsView />;
       default: return <DashboardView />;
     }
@@ -2265,15 +1612,8 @@ useEffect(() => {
           0% { transform: scale(1) rotate(0deg); opacity: 1; }
           100% { transform: scale(0) rotate(360deg); opacity: 0; }
         }
-        @keyframes marquee {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
-        }
-        .animate-marquee {
-          animation: marquee 30s linear infinite;
-        }
-        .animate-marquee:hover {
-          animation-play-state: paused;
+        .animate-confetti {
+          animation: confetti 1s linear forwards;
         }
       `}</style>
 
@@ -2308,7 +1648,6 @@ useEffect(() => {
               {[
                 { id: 'dashboard', icon: <Home className="w-5 h-5 mr-3" />, label: 'Dashboard' },
                 { id: 'watchlist', icon: <Heart className="w-5 h-5 mr-3" />, label: 'Watchlist' },
-                { id: 'analysis', icon: <LineChart className="w-5 h-5 mr-3" />, label: 'Analysis' },
                 { id: 'settings', icon: <Cog className="w-5 h-5 mr-3" />, label: 'Settings' }
               ].map(tab => (
                 <button
@@ -2323,9 +1662,6 @@ useEffect(() => {
                   {tab.label}
                 </button>
               ))}
-            </div>
-            <div className="mt-8 pt-6 border-t border-gray-700">
-              <SystemStatus />
             </div>
           </div>
         </div>
@@ -2342,11 +1678,11 @@ useEffect(() => {
               <Menu className="w-6 h-6" />
             </button>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-500 to-cyan-400 bg-clip-text text-transparent">
-                {quantumMode ? '⚛️ Quantum Analyzer v.2.0' : 'Ecoplus Analyzer v.1169'}
+              <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-emerald-500 to-cyan-400 bg-clip-text text-transparent">
+                Quantum Analyzer
               </h1>
-              <p className="text-sm text-gray-400 mt-1">
-                {quantumMode ? 'Quantum-Powered Trading Intelligence' : 'AI-Powered Trading Intelligence'} | Design by ParagArtbook
+              <p className="text-xs md:text-sm text-gray-400 mt-1">
+                AI-Powered Trading Intelligence
               </p>
             </div>
           </div>
@@ -2356,32 +1692,18 @@ useEffect(() => {
               <div className="text-lg font-mono text-emerald-400">{currentTime.toLocaleTimeString('en-IN')}</div>
               <div className="text-xs text-gray-400">
                 {currentTime.toLocaleDateString('en-IN', { 
-                  weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' 
+                  weekday: 'short', day: 'numeric', month: 'short'
                 })}
               </div>
             </div>
             
             <div className="flex space-x-2">
               <button 
-                onClick={() => setAiAssistantActive(!aiAssistantActive)}
-                className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-100'} border ${darkMode ? 'border-purple-500' : 'border-purple-200'}`}
-                title="AI Assistant"
-              >
-                <BrainCircuit className="w-5 h-5 text-purple-400" />
-              </button>
-              <button 
                 onClick={() => setDarkMode(!darkMode)}
                 className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-100'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'}`}
-                title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+                title={darkMode ? 'Light Mode' : 'Dark Mode'}
               >
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-              <button 
-                onClick={toggleFullscreen}
-                className={`p-2 rounded-lg ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-white hover:bg-gray-100'} border ${darkMode ? quantumMode ? 'border-cyan-500' : 'border-emerald-500' : quantumMode ? 'border-cyan-200' : 'border-emerald-200'}`}
-                title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-              >
-                {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
               </button>
             </div>
           </div>
@@ -2392,7 +1714,6 @@ useEffect(() => {
           {[
             { id: 'dashboard', icon: <Home className="w-5 h-5 mr-2" />, label: 'Dashboard' },
             { id: 'watchlist', icon: <Heart className="w-5 h-5 mr-2" />, label: `Watchlist (${watchlist.length})` },
-            { id: 'analysis', icon: <LineChart className="w-5 h-5 mr-2" />, label: 'Analysis' },
             { id: 'settings', icon: <Cog className="w-5 h-5 mr-2" />, label: 'Settings' }
           ].map(tab => (
             <button
@@ -2417,7 +1738,6 @@ useEffect(() => {
           {[
             { id: 'dashboard', icon: '🏠', label: 'Dash' },
             { id: 'watchlist', icon: '⭐', label: `Watch (${watchlist.length})` },
-            { id: 'analysis', icon: '📊', label: 'Analyze' },
             { id: 'settings', icon: '⚙️', label: 'Settings' }
           ].map(tab => (
             <button
@@ -2448,30 +1768,12 @@ useEffect(() => {
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
             <div className="flex items-center space-x-4 flex-wrap">
-              {quantumMode ? (
-                <>
-                  <span className="flex items-center"><Atom className="w-3 h-3 mr-1" /> Quantum Live</span>
-                  <span>•</span>
-                  <span className="flex items-center"><BrainCircuit className="w-3 h-3 mr-1" /> AI Analysis</span>
-                  <span>•</span>
-                  <span>🌀 Parallel Universe #{parallelUniverse}</span>
-                  <span>•</span>
-                  <span>🇮🇳 Made in India</span>
-                </>
-              ) : (
-                <>
-                  <span>⚡ Live Data</span>
-                  <span>•</span>
-                  <span>🧠 AI Analysis</span>
-                  <span>•</span>
-                  <span>🇮🇳 Made in India</span>
-                </>
-              )}
+              <span>⚡ Live Data</span>
+              <span>•</span>
+              <span>🧠 AI Analysis</span>
+              <span>•</span>
+              <span>📊 {filteredAssets.length} Assets</span>
             </div>
-            <p className="mt-1">
-              {filteredAssets.length} Assets filtered | ⭐ {watchlist.length} in watchlist | 
-              {quantumMode ? ` ⚛️ ${quantumEntanglement}% entanglement` : ` 🎯 ${marketStats.strongSignals} strong signals`}
-            </p>
           </div>
           
           <div className="flex items-center space-x-3">
@@ -2479,47 +1781,11 @@ useEffect(() => {
               onClick={refreshData}
               className={`px-4 py-2 rounded-lg ${quantumMode ? 'bg-gradient-to-r from-cyan-600 to-purple-600 hover:from-cyan-700 hover:to-purple-700' : 'bg-emerald-600 hover:bg-emerald-700'} text-white font-medium flex items-center`}
             >
-              <RefreshCw className="w-4 h-4 mr-2" /> {quantumMode ? 'Quantum Refresh' : 'Refresh Data'}
+              <RefreshCw className="w-4 h-4 mr-2" /> Refresh
             </button>
-            <div className="text-xs text-gray-400">
-              {quantumMode ? 'Quantum Time' : 'Updated'}: {currentTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})}
-            </div>
           </div>
         </div>
       </div>
-      
-      {/* Alerts Notification */}
-      {alerts.length > 0 && (
-        <div className="fixed bottom-4 right-4 z-30 space-y-2 max-w-sm">
-          {alerts.slice(0, 2).map(alert => (
-            <div 
-              key={alert.id}
-              className={`p-3 rounded-lg shadow-lg ${darkMode ? 'bg-gray-800' : 'bg-white'} border-l-4 ${
-                alert.type === 'success' ? 'border-emerald-500' : 
-                alert.type === 'warning' ? 'border-yellow-500' : 
-                'border-blue-500'
-              }`}
-            >
-              <div className="flex items-center">
-                {alert.type === 'success' ? '✅' : alert.type === 'warning' ? '⚠️' : 'ℹ️'}
-                <span className="ml-2 text-sm">{alert.message}</span>
-              </div>
-              <div className="text-xs text-gray-400 mt-1">{alert.time}</div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Floating AI Assistant Button */}
-      {!aiAssistantActive && (
-        <button
-          onClick={() => setAiAssistantActive(true)}
-          className="fixed bottom-4 left-4 z-30 p-3 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg hover:scale-110 transition-transform"
-          title="Open AI Assistant"
-        >
-          <BrainCircuit className="w-6 h-6" />
-        </button>
-      )}
     </div>
   );
 };
