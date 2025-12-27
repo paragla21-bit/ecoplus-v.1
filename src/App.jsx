@@ -501,3 +501,83 @@ Total: ${asset.totalScore} | AI: ${asset.aiScore} | ICT: ${asset.ictScore}
                           <div className="bg-purple-900 bg-opacity-30 rounded-lg p-4 border border-purple-500">
                             <h4 className="font-bold mb-3 text-purple-400 text-lg">🏦 Market Intelligence</h4>
                             <div className="space-y-2 text-sm">
+                              <div className="flex justify-between bg-gray-800 p-2 rounded">
+                                <span className="text-gray-400">Institutional:</span>
+                                <span className={`font-bold ${asset.institutionalFlow === 'Buying' ? 'text-green-400' : 'text-red-400'}`}>
+                                  {asset.institutionalFlow}
+                                </span>
+                              </div>
+                              <div className="flex justify-between bg-gray-800 p-2 rounded">
+                                <span className="text-gray-400">Dark Pool:</span>
+                                <span className="font-semibold text-purple-400">{asset.darkPoolActivity}</span>
+                              </div>
+                              <div className="flex justify-between bg-gray-800 p-2 rounded">
+                                <span className="text-gray-400">Options Flow:</span>
+                                <span className="font-semibold text-cyan-400">{asset.optionsFlow}</span>
+                              </div>
+                              <div className="flex justify-between bg-gray-800 p-2 rounded">
+                                <span className="text-gray-400">Short Interest:</span>
+                                <span className="font-semibold text-yellow-400">{asset.shortInterest}</span>
+                              </div>
+                              <div className="flex justify-between bg-gray-800 p-2 rounded">
+                                <span className="text-gray-400">Whale Activity:</span>
+                                <span className={`font-semibold ${asset.whaleActivity === 'Detected' ? 'text-orange-400 animate-pulse' : 'text-gray-500'}`}>
+                                  {asset.whaleActivity}
+                                </span>
+                              </div>
+                              <div className="flex justify-between bg-gray-800 p-2 rounded">
+                                <span className="text-gray-400">Next Kill Zone:</span>
+                                <span className="font-semibold text-green-400">{asset.nextOptimal}</span>
+                              </div>
+                              <div className="flex justify-between bg-gray-800 p-2 rounded">
+                                <span className="text-gray-400">Earnings:</span>
+                                <span className="font-semibold text-blue-400">{asset.earningsDate}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Action Button */}
+                        <div className="mt-6 text-center">
+                          <button
+                            onClick={() => sendTelegramAlert(asset)}
+                            className="px-8 py-3 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 rounded-lg font-bold text-lg shadow-lg shadow-emerald-500/50 transition-all transform hover:scale-105"
+                          >
+                            <Bell className="inline mr-2" />
+                            Send Alert to Telegram
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="mt-8 text-center text-gray-400 text-sm border-t border-emerald-500 pt-6">
+        <p className="text-lg font-semibold mb-2">⚡ Live Data Updates Every 5 Seconds | 🧠 AI-Powered ICT Analysis | 🎯 Professional Trading Signals</p>
+        <p className="mt-2 text-emerald-400 font-bold">💡 Focus on Top 7 STRONG BUY signals during active Kill Zones for maximum probability</p>
+        <div className="mt-4 flex justify-center gap-8 text-xs">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            <span>Strong Buy = High Confidence</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+            <span>Hold = Wait for Setup</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+            <span>High Risk = Avoid</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ICTAdvancedAnalyzer;
