@@ -647,7 +647,7 @@ useEffect(() => {
       // Simulate cyber attacks occasionally
       if (Math.random() > 0.95) {
         setCyberAttackDetected(true);
-        setTimeout(() => setCyberAttackDetected(false), 5000);
+        setTimeout(() => setCyberAttackDetected(false), 11000);
       }
       
       // Simulate blockchain sync
@@ -655,7 +655,7 @@ useEffect(() => {
         if (prev < 100) return prev + 0.1;
         return 100;
       });
-    }, 6000);
+    }, 21000);
     
     return () => clearInterval(interval);
   }, [isCharging]);
