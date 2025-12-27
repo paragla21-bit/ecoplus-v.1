@@ -354,10 +354,7 @@ const ICTProfessionalAnalyzer = () => {
   { symbol: 'USD/ILS', name: 'US Dollar / Israeli Shekel', category: 'Exotic', volatility: 'High' },
   { symbol: 'USD/THB', name: 'US Dollar / Thai Baht', category: 'Exotic', volatility: 'Medium' },
   { symbol: 'EUR/PLN', name: 'Euro / Polish Zloty', category: 'Exotic', volatility: 'High' },
-  { symbol: 'USD/BRL', name: 'US Dollar / Brazilian Real', category: 'Exotic', volatility: 'High' },
-  
-]
-]
+  { symbol: 'USD/BRL', name: 'US Dollar / Brazilian Real', category: 'Exotic', volatility: 'High' }
   ];
 
   const getKillzoneStatus = () => {
